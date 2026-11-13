@@ -74,20 +74,43 @@ async function trackVisitorSession() {
   }
 }
 
-// Load Settings from API or Local
+// Load Settings from LocalStorage, API, or static fallback
 async function loadSettings() {
+  const customSettings = localStorage.getItem('reign_custom_settings');
+  if (customSettings) {
+    try {
+      storeSettings = JSON.parse(customSettings);
+      return;
+    } catch (e) {}
+  }
   try {
     const res = await fetch('/api/settings');
     if (res.ok) {
       storeSettings = await res.json();
+    } else {
+      const fallback = await fetch('data/settings.json');
+      storeSettings = await fallback.json();
     }
   } catch (e) {
-    console.log('Using local store settings');
+    try {
+      const fallback = await fetch('data/settings.json');
+      storeSettings = await fallback.json();
+    } catch (err) {
+      console.log('Using local store settings');
+    }
   }
 }
 
-// Load Products from API or fallback
+// Load Products from LocalStorage, API, or static fallback
 async function loadProducts() {
+  const customProds = localStorage.getItem('reign_custom_products');
+  if (customProds) {
+    try {
+      productsData = JSON.parse(customProds);
+      renderProducts();
+      return;
+    } catch (e) {}
+  }
   try {
     const res = await fetch('/api/products');
     if (res.ok) {
