@@ -902,14 +902,14 @@
         const fallback = await fetch('data/analytics.json');
         if (fallback.ok) {
           const data = await fallback.json();
-          document.getElementById('stat-today-visitors').textContent = data.today_visitors || 12;
-          document.getElementById('stat-alltime-visitors').textContent = data.all_time_visitors || 84;
-          document.getElementById('stat-today-date').textContent = `تاريخ اليوم: نشط ومحدث`;
+          document.getElementById('stat-today-visitors').textContent = data.today_visitors ?? 0;
+          document.getElementById('stat-alltime-visitors').textContent = data.all_time_visitors ?? 0;
+          document.getElementById('stat-today-date').textContent = `تاريخ اليوم: ${data.today_date || 'اليوم'}`;
         }
       } catch (err) {
-        document.getElementById('stat-today-visitors').textContent = '12';
-        document.getElementById('stat-alltime-visitors').textContent = '84';
-        document.getElementById('stat-today-date').textContent = 'تاريخ اليوم: نشط ومحدث';
+        document.getElementById('stat-today-visitors').textContent = '0';
+        document.getElementById('stat-alltime-visitors').textContent = '0';
+        document.getElementById('stat-today-date').textContent = 'تاريخ اليوم: نشط';
       }
     }
 
