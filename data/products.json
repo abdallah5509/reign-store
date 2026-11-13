@@ -1,0 +1,103 @@
+[
+  {
+    "id": "reign-signature-black",
+    "name": "REIGN Signature Wide-Leg Sweatpants — Onyx Black",
+    "name_ar": "سويت بانتس وايد ليج رين — أسود نفاث",
+    "subtitle": "The Wide-Leg Statement — Built For Movement, Designed To Stand Out",
+    "subtitle_ar": "قصة وايد ليج عصرية تمنحك أقصى راحة وحضور مميز",
+    "price": 870,
+    "old_price": 1100,
+    "discount": "وفر 230 ج.م",
+    "category": "wide-leg",
+    "featured": true,
+    "badge": "الأكثر طلباً",
+    "badge_en": "Best Seller",
+    "image": "assets/img/products/model_black.jpg",
+    "hover_image": "assets/img/products/waistband_detail.jpg",
+    "description": "سويت بانتس بقصة وايد ليج واسعة من خامة ميلتون قطن مصري فاخر ثقيل وفائق النعومة مع تطريز بارز لشعار REIGN، كمر مطاطي متين مع تكت جودة فاخرة وجيوب جانبية عميقة.",
+    "features": [
+      "خامة قطن مصري ثقيل (Heavyweight Cotton Fleece) بنعومة فائقة",
+      "قصة واسعة مريحة من الخصر حتى الكاحل (Relaxed Wide-Leg Drape)",
+      "شعار REIGN مطرز بدقة عالية 3D على الفخذ الأيسر",
+      "كمر مطاطي عريض مع تكت قماش فاخر وحبل شد متين",
+      "جيوب جانبية عميقة عالية التحمل",
+      "مقاوم للوبر والانكماش"
+    ],
+    "sizes": [
+      "M, L",
+      "XL, XXL"
+    ],
+    "has_discount": true,
+    "images": [
+      "assets/img/products/model_black.jpg",
+      "assets/img/products/waistband_detail.jpg",
+      "assets/img/products/reign_hangers.jpg"
+    ]
+  },
+  {
+    "id": "reign-signature-grey",
+    "name": "REIGN Signature Wide-Leg Sweatpants — Heather Grey",
+    "name_ar": "سويت بانتس وايد ليج رين — رمادي ميلانج",
+    "subtitle": "Rule Your Comfort — Ultra-Soft Egyptian Heavyweight Fleece",
+    "subtitle_ar": "خامة ميلتون ثقيل معالج بنعومة فائقة ولون رمادي راقي",
+    "price": 870,
+    "old_price": 1100,
+    "discount": "وفر 230 ج.م",
+    "category": "wide-leg",
+    "featured": true,
+    "badge": "إصدار شتوي",
+    "badge_en": "Winter Drop",
+    "image": "assets/img/products/model_grey.jpg",
+    "hover_image": "assets/img/products/reign_hangers.jpg",
+    "description": "سويت بانتس بلون رمادي ميلانج فاخر، نسيج حراري خفيف الوزن وقوي التماسك يسمح بالتنفس ويوفر راحة مطلقة طوال اليوم.",
+    "features": [
+      "نسيج قطني ممشط فائق النعومة",
+      "حزام خصر مرن وأربطة شد بلون متناسق",
+      "شعار REIGN مطرز بدقة بيضاء",
+      "قصة انسيابية تغطي الحذاء الرياضي بأناقة",
+      "خياطة مزدوجة لمتانة استثنائية"
+    ],
+    "sizes": [
+      "M, L",
+      "XL, XXL"
+    ],
+    "has_discount": true,
+    "images": [
+      "assets/img/products/model_grey.jpg",
+      "assets/img/products/reign_hangers.jpg"
+    ]
+  },
+  {
+    "id": "reign-signature-charcoal",
+    "name": "REIGN Signature Wide-Leg Sweatpants — Charcoal Slate",
+    "name_ar": "سويت بانتس وايد ليج رين — رمادي داكن شاركول",
+    "subtitle": "Athleisure & Street Movement — Precision Cut",
+    "subtitle_ar": "لون شاركول غامق فخم مثالي للتمارين والخروجات الكاجوال",
+    "price": 870,
+    "old_price": 1100,
+    "discount": "وفر 230 ج.م",
+    "category": "wide-leg",
+    "featured": false,
+    "badge": "حصري",
+    "badge_en": "Exclusive",
+    "image": "assets/img/products/model_charcoal.jpg",
+    "hover_image": "assets/img/products/waistband_detail.jpg",
+    "description": "تصميم رياضي عصري يجمع بين عملية الجيم وأناقة الستريت وير، مقاوم للتمزق ويوفر مرونة غير مقيدة في كل حركة.",
+    "features": [
+      "قماش قطني ثقيل يمنح دفئاً وملمساً ناعماً",
+      "قصة عريضة تسمح بحرية التدريب والحركة",
+      "تطريز REIGN عالي الجودة",
+      "حبل خصر بأطراف مخصصة وجيوب مبطنة"
+    ],
+    "sizes": [
+      "M, L",
+      "XL, XXL"
+    ],
+    "has_discount": true,
+    "images": [
+      "assets/img/products/model_charcoal.jpg",
+      "assets/img/products/waistband_detail.jpg",
+      "assets/img/products/reign_hangers.jpg"
+    ]
+  }
+]

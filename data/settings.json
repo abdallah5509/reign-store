@@ -1,0 +1,31 @@
+{
+  "brandName": "REIGN",
+  "tagline": "PREMIUM SPORTSWEAR — RULE YOUR COMFORT",
+  "tagline_ar": "ملابس رياضية فاخرة — ارتقِ براحتك وأناقتك",
+  "whatsapp": "01277141615",
+  "currency": "ج.م",
+  "adminPin": "1234",
+  "shippingRates": {
+    "cairo_giza": 50,
+    "alex_delta": 60,
+    "upper_egypt": 75
+  },
+  "announcement": "شحن لجميع محافظات مصر 🇪🇬 · إمكانية المعاينة والقياس عند الاستلام قبل الدفع",
+  "instagram": "https://www.instagram.com/reign.pants",
+  "sizeGuide": {
+    "M, L": {
+      "waist": "30 - 34 بوصة",
+      "length": "103 سم",
+      "weight": "60 - 80 كجم",
+      "height": "168 - 180 سم",
+      "fit": "قصة وايد ليج مظبوطة ومريحة للأوزان والأطوال المتوسطة"
+    },
+    "XL, XXL": {
+      "waist": "35 - 42 بوصة",
+      "length": "107 سم",
+      "weight": "80 - 110 كجم",
+      "height": "180 - 195 سم",
+      "fit": "قصة أوفرسايز فضفاضة أو للأوزان والأطوال الكبيرة"
+    }
+  }
+}
