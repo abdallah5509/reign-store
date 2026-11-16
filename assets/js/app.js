@@ -22,11 +22,15 @@ let qvQuantity = 1;
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
-  await loadSettings();
-  await loadProducts();
-  setupEventListeners();
   initHeroSlider();
+  setupEventListeners();
   updateCartUI();
+  try {
+    await loadSettings();
+    await loadProducts();
+  } catch (err) {
+    console.error('Async data load error:', err);
+  }
   trackVisitorSession();
 });
 
@@ -552,7 +556,53 @@ function setupEventListeners() {
     });
   });
 
-  // Hero Slideshow Carousel (Auto-rotating, Touch & Arrows)
+  // Cart Drawer open/close
+  const cartBtn = document.getElementById('nav-cart-btn');
+  const cartClose = document.getElementById('cart-close-btn');
+  const cartOverlay = document.getElementById('cart-drawer-overlay');
+
+  if (cartBtn) cartBtn.addEventListener('click', openCartDrawer);
+  if (cartClose) cartClose.addEventListener('click', closeCartDrawer);
+  if (cartOverlay) {
+    cartOverlay.addEventListener('click', (e) => {
+      if (e.target === cartOverlay) closeCartDrawer();
+    });
+  }
+
+  // Size Guide Modal open/close
+  const sizeGuideBtns = document.querySelectorAll('.btn-open-sizeguide');
+  const sizeModal = document.getElementById('sizeguide-modal');
+  const sizeModalClose = document.getElementById('sizeguide-close');
+
+  sizeGuideBtns.forEach(b => b.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (sizeModal) sizeModal.classList.add('active');
+  }));
+
+  if (sizeModalClose) {
+    sizeModalClose.addEventListener('click', () => {
+      if (sizeModal) sizeModal.classList.remove('active');
+    });
+  }
+
+  // Quick View Modal Backdrop & Escape
+  const qvModal = document.getElementById('quickview-modal');
+  if (qvModal) {
+    qvModal.addEventListener('click', (e) => {
+      if (e.target === qvModal) closeQuickView();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeQuickView();
+      if (sizeModal) sizeModal.classList.remove('active');
+      closeCartDrawer();
+    }
+  });
+}
+
+// Hero Slideshow Carousel (Auto-rotating, Touch & Arrows)
 function initHeroSlider() {
   const slider = document.getElementById('hero-slider');
   if (!slider) return;
@@ -567,7 +617,7 @@ function initHeroSlider() {
 
   let currentIndex = 0;
   let autoPlayTimer = null;
-  const INTERVAL = 3600; // 3.6s per slide
+  const INTERVAL = 3500; // 3.5 seconds
 
   function goToSlide(index) {
     if (index < 0) {
@@ -669,51 +719,7 @@ function initHeroSlider() {
   startAutoPlay();
 }
 
-  // Cart Drawer open/close
-  const cartBtn = document.getElementById('nav-cart-btn');
-  const cartClose = document.getElementById('cart-close-btn');
-  const cartOverlay = document.getElementById('cart-drawer-overlay');
-
-  if (cartBtn) cartBtn.addEventListener('click', openCartDrawer);
-  if (cartClose) cartClose.addEventListener('click', closeCartDrawer);
-  if (cartOverlay) {
-    cartOverlay.addEventListener('click', (e) => {
-      if (e.target === cartOverlay) closeCartDrawer();
-    });
-  }
-
-  // Size Guide Modal open/close
-  const sizeGuideBtns = document.querySelectorAll('.btn-open-sizeguide');
-  const sizeModal = document.getElementById('sizeguide-modal');
-  const sizeModalClose = document.getElementById('sizeguide-close');
-
-  sizeGuideBtns.forEach(b => b.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (sizeModal) sizeModal.classList.add('active');
-  }));
-
-  if (sizeModalClose) {
-    sizeModalClose.addEventListener('click', () => {
-      if (sizeModal) sizeModal.classList.remove('active');
-    });
-  }
-
-  // Quick View Modal Backdrop & Escape
-  const qvModal = document.getElementById('quickview-modal');
-  if (qvModal) {
-    qvModal.addEventListener('click', (e) => {
-      if (e.target === qvModal) closeQuickView();
-    });
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeQuickView();
-      if (sizeModal) sizeModal.classList.remove('active');
-      closeCartDrawer();
-    }
-  });
-}
+window.initHeroSlider = initHeroSlider;
 
 // Cart Drawer open / close
 function openCartDrawer() {
