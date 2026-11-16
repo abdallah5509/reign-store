@@ -68,12 +68,50 @@
   <section class="hero-section hero-section-minimal" id="hero">
     <div class="hero-minimal-container">
       
-      <!-- 1. The Main Image at the Top -->
+      <!-- 1. The Main Hero Slider at the Top -->
       <div class="hero-visual-top">
         <div class="hero-card hero-card-chic">
-          <div class="hero-card-img-wrap">
-            <img src="assets/img/products/reign_hangers.jpg" alt="REIGN Wide-Leg Pants Collection" class="hero-card-img" id="hero-main-img">
+          <div class="hero-slider" id="hero-slider">
+            <div class="hero-slides-track" id="hero-slides-track">
+              
+              <!-- Slide 1: Heather Grey -->
+              <div class="hero-slide active" data-index="0" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" title="عرض تفاصيل Heather Grey">
+                <img src="assets/img/hero/hero_slide_grey.jpg" alt="REIGN Wide-Leg Pants — Heather Grey" class="hero-slide-img" loading="eager">
+                <div class="hero-slide-badge-color">HEATHER GREY · رمادي فاتح</div>
+              </div>
+
+              <!-- Slide 2: Charcoal Slate -->
+              <div class="hero-slide" data-index="1" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" title="عرض تفاصيل Charcoal Slate">
+                <img src="assets/img/hero/hero_slide_charcoal.jpg" alt="REIGN Wide-Leg Pants — Charcoal Slate" class="hero-slide-img" loading="lazy">
+                <div class="hero-slide-badge-color">CHARCOAL SLATE · رمادي غامق</div>
+              </div>
+
+              <!-- Slide 3: Onyx Black -->
+              <div class="hero-slide" data-index="2" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" title="عرض تفاصيل Onyx Black">
+                <img src="assets/img/hero/hero_slide_black.jpg" alt="REIGN Wide-Leg Pants — Onyx Black" class="hero-slide-img" loading="lazy">
+                <div class="hero-slide-badge-color">ONYX BLACK · أسود ملكي</div>
+              </div>
+
+            </div>
+
+            <!-- Top Badge -->
             <div class="hero-card-badge">THE SIGNATURE DROP · 3 COLORWAYS</div>
+
+            <!-- Slider Arrows -->
+            <button type="button" class="hero-slider-arrow hero-prev" id="hero-prev" aria-label="الصورة السابقة">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button type="button" class="hero-slider-arrow hero-next" id="hero-next" aria-label="الصورة التالية">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+
+            <!-- Pagination Dots -->
+            <div class="hero-slider-dots" id="hero-dots">
+              <button type="button" class="hero-dot active" data-index="0" aria-label="Heather Grey"></button>
+              <button type="button" class="hero-dot" data-index="1" aria-label="Charcoal Slate"></button>
+              <button type="button" class="hero-dot" data-index="2" aria-label="Onyx Black"></button>
+            </div>
+
           </div>
         </div>
       </div>
