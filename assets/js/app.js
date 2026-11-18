@@ -161,12 +161,18 @@ function renderProducts() {
 
     const hasDiscount = p.has_discount !== false && p.old_price && p.price < p.old_price;
     const defaultSize = (p.sizes && p.sizes[0]) ? p.sizes[0] : 'M, L';
+    const stock = p.stock !== undefined ? Number(p.stock) : 50;
+    const isSoldOut = stock <= 0;
 
     return `
-      <div class="product-card" id="card-${p.id}" data-selected-size="${defaultSize}">
+      <div class="product-card ${isSoldOut ? 'is-sold-out' : ''}" id="card-${p.id}" data-selected-size="${defaultSize}">
         <div class="product-media" id="media-${p.id}">
           <img src="${activeImg}" alt="${p.name}" class="product-img" id="img-${p.id}" onclick="openQuickView('${p.id}')">
-          ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+          
+          ${isSoldOut ? `
+            <span class="sold-out-badge">نفدت الكمية · SOLD OUT</span>
+            <div class="sold-out-overlay"><span class="sold-out-stamp">SOLD OUT</span></div>
+          ` : (p.badge ? `<span class="product-badge">${p.badge}</span>` : '')}
 
           ${imgs.length > 1 ? `
             <button type="button" class="prod-arrow prod-arrow-prev" onclick="event.stopPropagation(); changeCardImg('${p.id}', -1)" aria-label="الصورة السابقة" title="الصورة السابقة">
@@ -192,6 +198,7 @@ function renderProducts() {
             ${hasDiscount ? `<span class="product-price-old">${p.old_price}</span>` : ''}
             <span class="product-currency">${storeSettings.currency || 'ج.م'}</span>
             ${hasDiscount && p.discount ? `<span class="product-discount-tag">${p.discount}</span>` : ''}
+            ${isSoldOut ? `<span class="stock-indicator-tag sold-out">نفدت الكمية</span>` : (stock <= 5 ? `<span class="stock-indicator-tag low-stock">متبقي ${stock} فقط!</span>` : '')}
           </div>
 
           <div class="size-selector-row">
@@ -207,13 +214,20 @@ function renderProducts() {
           </div>
 
           <div class="product-card-actions">
-            <button type="button" class="btn-card-add" onclick="addCardToCart('${p.id}')">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
-                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
-              </svg>
-              إضافة للسلة
-            </button>
+            ${isSoldOut ? `
+              <button type="button" class="btn-card-add is-sold-out-btn" disabled title="عذراً، هذا المنتج غير متوفر حالياً">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                غير متوفر (Sold Out)
+              </button>
+            ` : `
+              <button type="button" class="btn-card-add" onclick="addCardToCart('${p.id}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
+                  <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                </svg>
+                إضافة للسلة
+              </button>
+            `}
             <button type="button" class="btn-card-quick" title="معاينة تفاصيل المنتج والصور" onclick="openQuickView('${p.id}')">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
@@ -279,6 +293,8 @@ window.openQuickView = function(productId) {
   const hasDiscount = p.has_discount !== false && p.old_price && p.price < p.old_price;
   const discountText = p.discount || (p.old_price ? `وفر ${p.old_price - p.price} ج.م` : '');
   const currency = storeSettings.currency || 'ج.م';
+  const stock = p.stock !== undefined ? Number(p.stock) : 50;
+  const isSoldOut = stock <= 0;
 
   const content = document.getElementById('quickview-content');
   if (!content) return;
@@ -290,6 +306,10 @@ window.openQuickView = function(productId) {
         <div class="qv-main-img-wrap">
           <img src="${activeImg}" alt="${p.name_ar || p.name}" class="qv-main-img" id="qv-large-img">
           
+          ${isSoldOut ? `
+            <span class="sold-out-badge">نفدت الكمية · SOLD OUT</span>
+          ` : ''}
+
           ${imgs.length > 1 ? `
             <button type="button" class="prod-arrow prod-arrow-prev" onclick="changeQvImg(-1)" title="الصورة السابقة">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
@@ -321,7 +341,15 @@ window.openQuickView = function(productId) {
           <span class="qv-price">${p.price} ${currency}</span>
           ${hasDiscount ? `<span class="qv-old-price">${p.old_price} ${currency}</span>` : ''}
           ${hasDiscount ? `<span class="product-discount-tag">${discountText}</span>` : ''}
+          ${isSoldOut ? `<span class="stock-indicator-tag sold-out">نفدت الكمية</span>` : (stock <= 5 ? `<span class="stock-indicator-tag low-stock">متبقي ${stock} قطع فقط!</span>` : '')}
         </div>
+
+        ${isSoldOut ? `
+          <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 12px 14px; border-radius: 8px; font-weight: 800; font-size: 0.9rem; margin-bottom: 20px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span>عذراً، هذا المنتج غير متوفر حالياً (نفدت الكمية بالكامل).</span>
+          </div>
+        ` : ''}
 
         <ul class="qv-features-list">
           <li>
@@ -361,26 +389,38 @@ window.openQuickView = function(productId) {
         </div>
 
         <!-- Quantity Selector -->
-        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
-          <span style="font-size: 0.84rem; font-weight: 700; color: #fff;">الكمية:</span>
-          <div class="cart-qty-ctrl" style="background: var(--bg-card); padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-            <button type="button" class="btn-qty" onclick="changeQvQty(-1)">-</button>
-            <span id="qv-qty-display" style="font-size: 0.95rem; font-weight: 800; min-width: 28px; text-align: center; color: #fff;">1</span>
-            <button type="button" class="btn-qty" onclick="changeQvQty(1)">+</button>
+        ${!isSoldOut ? `
+          <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+            <span style="font-size: 0.84rem; font-weight: 700; color: #fff;">الكمية:</span>
+            <div class="cart-qty-ctrl" style="background: var(--bg-card); padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <button type="button" class="btn-qty" onclick="changeQvQty(-1)">-</button>
+              <span id="qv-qty-display" style="font-size: 0.95rem; font-weight: 800; min-width: 28px; text-align: center; color: #fff;">1</span>
+              <button type="button" class="btn-qty" onclick="changeQvQty(1)">+</button>
+            </div>
           </div>
-        </div>
+        ` : ''}
 
         <!-- Actions -->
         <div class="qv-actions-row">
-          <button type="button" class="btn-qv-add" onclick="addQvToCart()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-            إضافة إلى سلة المشتريات
-          </button>
+          ${isSoldOut ? `
+            <button type="button" class="btn-qv-add is-sold-out-btn" disabled style="background:#27272a; color:#a1a1aa; border:1px solid #3f3f46; cursor:not-allowed; opacity:0.8; font-weight:700;">
+              غير متوفر للطلب حالياً (نفدت الكمية)
+            </button>
+            <button type="button" class="btn-qv-wa" onclick="askAboutSoldOutWhatsApp('${p.id}')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              استفسر عن موعد توفره عبر واتساب
+            </button>
+          ` : `
+            <button type="button" class="btn-qv-add" onclick="addQvToCart()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+              إضافة إلى سلة المشتريات
+            </button>
 
-          <button type="button" class="btn-qv-wa" onclick="checkoutQvViaWhatsApp()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            طلب فوري عبر واتساب مباشرة
-          </button>
+            <button type="button" class="btn-qv-wa" onclick="checkoutQvViaWhatsApp()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              طلب فوري عبر واتساب مباشرة
+            </button>
+          `}
         </div>
 
         <!-- Perks -->
@@ -458,6 +498,11 @@ window.openSizeGuideFromQv = function() {
 
 window.addQvToCart = function() {
   if (!qvCurrentProduct) return;
+  const stock = qvCurrentProduct.stock !== undefined ? Number(qvCurrentProduct.stock) : 50;
+  if (stock <= 0) {
+    showToast('عذراً، هذا المنتج غير متوفر حالياً (Sold Out)!');
+    return;
+  }
   const size = qvSelectedSize || 'M, L';
   const cartItemId = `${qvCurrentProduct.id}-${size}`;
   const existing = cart.find(item => item.cartItemId === cartItemId);
@@ -485,6 +530,11 @@ window.addQvToCart = function() {
 
 window.checkoutQvViaWhatsApp = function() {
   if (!qvCurrentProduct) return;
+  const stock = qvCurrentProduct.stock !== undefined ? Number(qvCurrentProduct.stock) : 50;
+  if (stock <= 0) {
+    alert('عذراً، هذا المنتج غير متوفر حالياً (Sold Out)!');
+    return;
+  }
   const size = qvSelectedSize || 'M, L';
   const phone = storeSettings.whatsapp || '01277141615';
   const formattedPhone = phone.replace(/^0/, '20');
@@ -500,6 +550,16 @@ window.checkoutQvViaWhatsApp = function() {
 
   const waUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
   window.open(waUrl, '_blank');
+};
+
+// WhatsApp Inquiry for Sold Out Products
+window.askAboutSoldOutWhatsApp = function(productId) {
+  const p = productsData.find(item => item.id === productId);
+  if (!p) return;
+  const phone = storeSettings.whatsapp || '01277141615';
+  const formattedPhone = phone.replace(/^0/, '20');
+  const msg = `مرحباً REIGN، حابب أستفسر عن موعد توفر بنطلون: *${p.name_ar || p.name}* (حالياً غير متوفر Sold Out على الموقع).`;
+  window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
 };
 
 // Select Card Size
@@ -518,6 +578,12 @@ window.addCardToCart = function(productId) {
   const card = document.getElementById(`card-${productId}`);
   const product = productsData.find(p => p.id === productId);
   if (!card || !product) return;
+
+  const stock = product.stock !== undefined ? Number(product.stock) : 50;
+  if (stock <= 0) {
+    showToast('عذراً، هذا المنتج غير متوفر حالياً (Sold Out)!');
+    return;
+  }
 
   const size = card.getAttribute('data-selected-size') || product.sizes[0];
   const cartItemId = `${product.id}-${size}`;

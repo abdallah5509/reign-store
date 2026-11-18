@@ -773,6 +773,26 @@
             <input type="text" id="edit-discount-text" class="form-control" placeholder="وفر 230 ج.م">
           </div>
 
+          <!-- Stock / Inventory Count -->
+          <div class="form-group full" style="background: rgba(255, 255, 255, 0.03); padding: 14px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-top: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div>
+                <label style="font-weight: 800; color: #fff; font-size: 0.92rem; margin-bottom: 2px; display: block;">الكمية المتوفرة في المخزن (عدد القطع):</label>
+                <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0;">
+                  لو حددت العدد <strong>0</strong>، المنتج هيظهر في المتجر تلقائياً <strong>نفدت الكمية (Sold Out)</strong> ومش هيقدر العميل يطلبه.
+                </p>
+              </div>
+              <div id="stock-badge-preview" style="font-size: 0.78rem; font-weight: 800; padding: 4px 10px; border-radius: 4px; background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.35);">متوفر</div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; max-width: 320px; margin-top: 10px;">
+              <button type="button" class="btn btn-dark" style="padding: 6px 14px; font-weight: 800; font-size: 1.1rem;" onclick="stepStock(-1)">-</button>
+              <input type="number" id="edit-stock" class="form-control" required min="0" step="1" style="text-align: center; font-weight: 800; font-size: 1.15rem; width: 90px;" oninput="updateStockPreview()">
+              <button type="button" class="btn btn-dark" style="padding: 6px 14px; font-weight: 800; font-size: 1.1rem;" onclick="stepStock(1)">+</button>
+              <button type="button" class="btn btn-dark" style="padding: 6px 10px; font-size: 0.78rem; color: #ef4444; border-color: rgba(239,68,68,0.4); margin-right: 6px;" onclick="setStockZero()">تعيين 0 (Sold Out)</button>
+            </div>
+          </div>
+
           <!-- Image 1: Main Image -->
           <div class="form-group full">
             <label>رابط الصورة الأساسية للمنتج:</label>
@@ -961,12 +981,16 @@
         const hasDiscount = p.has_discount !== false && p.old_price && p.price < p.old_price;
         const discountText = p.discount || (p.old_price ? `وفر ${p.old_price - p.price} ج.م` : '');
         const sizes = p.sizes || ['M, L', 'XL, XXL'];
+        const stock = p.stock !== undefined ? Number(p.stock) : 50;
+        const isSoldOut = stock <= 0;
 
         return `
           <div class="admin-prod-card" id="admin-card-${p.id}">
             <div class="admin-prod-media">
               <img src="${p.image || 'assets/img/placeholder.svg'}" class="admin-prod-img" alt="${p.name_ar || p.name}">
-              ${p.badge ? `<span class="admin-prod-badge">${p.badge}</span>` : ''}
+              ${isSoldOut ? `
+                <span class="admin-prod-badge" style="background: #dc2626; color: #fff;">نفدت الكمية · 0 قطع</span>
+              ` : (p.badge ? `<span class="admin-prod-badge">${p.badge}</span>` : '')}
             </div>
 
             <div class="admin-prod-body">
@@ -976,6 +1000,28 @@
                 <span class="current-price">${p.price} ج.م</span>
                 ${hasDiscount ? `<span class="old-price">${p.old_price} ج.م</span>` : ''}
                 ${hasDiscount ? `<span class="discount-pill">${discountText}</span>` : `<span class="no-discount-pill">خصم غير مفعل</span>`}
+              </div>
+
+              <!-- Live Stock Counter in Admin -->
+              <div class="admin-stock-row" style="margin: 8px 0 10px; display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border: 1px solid var(--border-color);">
+                <span style="font-size: 0.78rem; color: var(--text-secondary); font-weight: 700;">المخزون:</span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  ${isSoldOut ? `
+                    <span style="font-size: 0.75rem; font-weight: 800; color: #ef4444; background: rgba(239, 68, 68, 0.14); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(239,68,68,0.35);">
+                      ⚠️ 0 قطع (Sold Out)
+                    </span>
+                  ` : `
+                    <span style="font-size: 0.75rem; font-weight: 800; color: #22c55e; background: rgba(34, 197, 94, 0.14); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(34,197,94,0.35);">
+                      ✓ ${stock} قطعة متوفرة
+                    </span>
+                  `}
+                  
+                  <div style="display: flex; gap: 4px;">
+                    <button type="button" class="btn btn-dark" style="padding: 2px 7px; font-size: 0.8rem; font-weight: 800;" onclick="quickUpdateStock('${p.id}', -1)" title="إنقاص قطعة واحدة">-</button>
+                    <button type="button" class="btn btn-dark" style="padding: 2px 7px; font-size: 0.8rem; font-weight: 800;" onclick="quickUpdateStock('${p.id}', 1)" title="زيادة قطعة واحدة">+</button>
+                    <button type="button" class="btn btn-dark" style="padding: 2px 7px; font-size: 0.72rem; color: #ef4444; border-color: rgba(239,68,68,0.3);" onclick="quickSetSoldOut('${p.id}')" title="تصفير المخزون ليصبح Sold Out فوراً">0</button>
+                  </div>
+                </div>
               </div>
 
               <div class="sizes-indicator">
@@ -1053,6 +1099,68 @@
       showToast('تم حفظ إعدادات المتجر ورقم الواتساب بنجاح!');
     }
 
+
+    // Stock & Inventory Management Helpers
+    function updateStockPreview() {
+      const input = document.getElementById('edit-stock');
+      const preview = document.getElementById('stock-badge-preview');
+      if (!input || !preview) return;
+      const val = parseInt(input.value, 10);
+      if (isNaN(val) || val <= 0) {
+        preview.textContent = 'نفدت الكمية (Sold Out)';
+        preview.style.background = 'rgba(239, 68, 68, 0.15)';
+        preview.style.color = '#ef4444';
+        preview.style.border = '1px solid rgba(239, 68, 68, 0.35)';
+      } else if (val <= 5) {
+        preview.textContent = `مخزون منخفض (${val} قطع)`;
+        preview.style.background = 'rgba(245, 158, 11, 0.15)';
+        preview.style.color = '#f59e0b';
+        preview.style.border = '1px solid rgba(245, 158, 11, 0.35)';
+      } else {
+        preview.textContent = `متوفر (${val} قطعة)`;
+        preview.style.background = 'rgba(34, 197, 94, 0.15)';
+        preview.style.color = '#22c55e';
+        preview.style.border = '1px solid rgba(34, 197, 94, 0.35)';
+      }
+    }
+
+    function stepStock(delta) {
+      const input = document.getElementById('edit-stock');
+      if (!input) return;
+      const cur = parseInt(input.value, 10) || 0;
+      input.value = Math.max(0, cur + delta);
+      updateStockPreview();
+    }
+
+    function setStockZero() {
+      const input = document.getElementById('edit-stock');
+      if (!input) return;
+      input.value = 0;
+      updateStockPreview();
+    }
+
+    window.quickUpdateStock = function(pid, delta) {
+      const p = productsList.find(item => item.id === pid);
+      if (!p) return;
+      const current = (p.stock !== undefined) ? Number(p.stock) : 50;
+      const next = Math.max(0, current + delta);
+      p.stock = next;
+      p.is_sold_out = (next === 0);
+      localStorage.setItem('reign_custom_products', JSON.stringify(productsList));
+      renderProducts();
+      showToast(next === 0 ? `تم تصفير مخزون "${p.name_ar || p.name}" وأصبح نفدت الكمية (Sold Out)!` : `تم تحديث مخزون "${p.name_ar || p.name}": ${next} قطعة`);
+    };
+
+    window.quickSetSoldOut = function(pid) {
+      const p = productsList.find(item => item.id === pid);
+      if (!p) return;
+      p.stock = 0;
+      p.is_sold_out = true;
+      localStorage.setItem('reign_custom_products', JSON.stringify(productsList));
+      renderProducts();
+      showToast(`تم تعيين "${p.name_ar || p.name}" إلى نفدت الكمية (Sold Out)!`);
+    };
+
     // Edit Product Modal Handling
     function openEditModal(pid) {
       const p = productsList.find(item => item.id === pid);
@@ -1079,6 +1187,10 @@
       document.getElementById('edit-category').value = p.category || 'wide-leg';
       document.getElementById('edit-sizes').value = (p.sizes || ['M, L', 'XL, XXL']).join(' | ');
 
+      const currentStock = (p.stock !== undefined) ? Number(p.stock) : 50;
+      document.getElementById('edit-stock').value = currentStock;
+      updateStockPreview();
+
       toggleDiscountFields();
       document.getElementById('edit-prod-modal').classList.add('active');
     }
@@ -1099,6 +1211,8 @@
       document.getElementById('edit-badge').value = 'جديد';
       document.getElementById('edit-category').value = 'wide-leg';
       document.getElementById('edit-sizes').value = 'M, L | XL, XXL';
+      document.getElementById('edit-stock').value = 50;
+      updateStockPreview();
 
       toggleDiscountFields();
       document.getElementById('edit-prod-modal').classList.add('active');
@@ -1126,6 +1240,7 @@
 
       const price = Number(document.getElementById('edit-price').value);
       const oldPrice = Number(document.getElementById('edit-old-price').value) || null;
+      const stock = Math.max(0, parseInt(document.getElementById('edit-stock').value, 10) || 0);
       const hasDiscount = document.getElementById('edit-has-discount').checked;
       let discountText = document.getElementById('edit-discount-text').value.trim();
 
@@ -1148,6 +1263,8 @@
         subtitle: document.getElementById('edit-subtitle-ar').value.trim(),
         price: price,
         old_price: oldPrice,
+        stock: stock,
+        is_sold_out: (stock === 0),
         has_discount: hasDiscount,
         discount: hasDiscount ? discountText : null,
         image: imgMain,
