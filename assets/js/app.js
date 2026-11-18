@@ -1,3 +1,74 @@
+
+// ============================================================
+// BUNDLE PRICING ALGORITHM (Any 2 for 1500, Any 3 for 2000)
+// ============================================================
+function calculateCartPricing(cartItems) {
+  const totalCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
+  const normalSubtotal = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+  if (totalCount === 0) {
+    return {
+      totalCount: 0,
+      normalSubtotal: 0,
+      finalTotal: 0,
+      discountAmount: 0,
+      bundleApplied: null,
+      upsellMessage: null,
+      isBundleActive: false
+    };
+  }
+
+  // 3 pants = 2000 EGP, 2 pants = 1500 EGP, 1 = item.price (870)
+  const triples = Math.floor(totalCount / 3);
+  const rem = totalCount % 3;
+
+  let bundleTotal = triples * 2000;
+  let bundleDetails = [];
+
+  if (triples > 0) {
+    bundleDetails.push(triples === 1 ? 'باندل الترايو الثلاثي (3 بنطلونات بـ 2,000 ج.م)' : `${triples} × باندل الـ 3 بنطلونات (${triples * 2000} ج.م)`);
+  }
+
+  if (rem === 2) {
+    bundleTotal += 1500;
+    bundleDetails.push('باندل الثنائي (2 بنطلون بـ 1,500 ج.م)');
+  } else if (rem === 1) {
+    bundleTotal += 870;
+  }
+
+  const isBundleActive = bundleTotal < normalSubtotal && totalCount >= 2;
+  const finalTotal = isBundleActive ? bundleTotal : normalSubtotal;
+  const discountAmount = Math.max(0, normalSubtotal - finalTotal);
+
+  let upsellMessage = null;
+  if (totalCount === 1) {
+    upsellMessage = {
+      text: '🔥 أضف بنطلون كمان وخذ الاثنين بـ 1,500 ج.م فقط (وفر 240 ج.م)!',
+      progress: 50
+    };
+  } else if (totalCount === 2) {
+    upsellMessage = {
+      text: '🚀 فرصة ذهبية! أضف بنطلون ثالث وخذ الثلاثة بـ 2,000 ج.م فقط (وفر 610 ج.م)!',
+      progress: 66
+    };
+  } else {
+    upsellMessage = {
+      text: `🎉 مبروك! تم تطبيق أقوى خصم باندل ووفرت ${discountAmount} ج.م كاملة!`,
+      progress: 100
+    };
+  }
+
+  return {
+    totalCount,
+    normalSubtotal,
+    finalTotal,
+    discountAmount,
+    bundleApplied: isBundleActive ? bundleDetails.join(' + ') : null,
+    upsellMessage,
+    isBundleActive
+  };
+}
+
 // REIGN Store Application Logic
 let productsData = [];
 let storeSettings = {
@@ -377,11 +448,18 @@ window.openQuickView = function(productId) {
         <p class="qv-sub">${p.subtitle_ar || p.subtitle || ''}</p>
 
         <div class="qv-price-row">
-          <span class="qv-price">${p.price} ${currency}</span>
+          <span class="qv-price" id="qv-dynamic-price">${p.price} ${currency}</span>
           ${hasDiscount ? `<span class="qv-old-price">${p.old_price} ${currency}</span>` : ''}
           ${hasDiscount ? `<span class="product-discount-tag">${discountText}</span>` : ''}
           ${isSoldOut ? `<span class="stock-indicator-tag sold-out">نفدت الكمية</span>` : (stock <= 5 ? `<span class="stock-indicator-tag low-stock">متبقي ${stock} قطع فقط!</span>` : '')}
         </div>
+
+        ${!isSoldOut ? `
+          <div class="qv-bundle-banner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>عرض الباندل: أي بنطلونين بـ 1,500 ج.م | أي 3 بنطلونات بـ 2,000 ج.م!</span>
+          </div>
+        ` : ''}
 
         ${isSoldOut ? `
           <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 12px 14px; border-radius: 8px; font-weight: 800; font-size: 0.9rem; margin-bottom: 20px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -528,6 +606,21 @@ window.changeQvQty = function(delta) {
   qvQuantity = Math.max(1, qvQuantity + delta);
   const disp = document.getElementById('qv-qty-display');
   if (disp) disp.textContent = qvQuantity;
+
+  // Dynamically reflect bundle pricing in Quick View
+  const priceDisplay = document.getElementById('qv-dynamic-price');
+  if (priceDisplay && qvCurrentProduct) {
+    const qvPricing = calculateCartPricing([{ price: qvCurrentProduct.price, qty: qvQuantity }]);
+    if (qvPricing.isBundleActive) {
+      priceDisplay.innerHTML = `
+        <span style="color:#22c55e; font-weight:900;">${qvPricing.finalTotal} ج.م</span>
+        <span style="font-size:0.85rem; color:#71717a; text-decoration:line-through; margin-right:6px;">${qvPricing.normalSubtotal} ج.م</span>
+        <span style="font-size:0.75rem; color:#22c55e; font-weight:800; display:block; margin-top:2px;">وفرت ${qvPricing.discountAmount} ج.م بعرض الباندل! 🔥</span>
+      `;
+    } else {
+      priceDisplay.innerHTML = `${qvPricing.finalTotal} ج.م`;
+    }
+  }
 };
 
 window.openSizeGuideFromQv = function() {
@@ -577,13 +670,20 @@ window.checkoutQvViaWhatsApp = function() {
   const size = qvSelectedSize || 'M, L';
   const phone = storeSettings.whatsapp || '01277141615';
   const formattedPhone = phone.replace(/^0/, '20');
-  const totalPrice = qvCurrentProduct.price * qvQuantity;
+  const qvPricing = calculateCartPricing([{ price: qvCurrentProduct.price, qty: qvQuantity }]);
 
   let msg = `*طلب سريع من موقع REIGN* 👑\n\n`;
   msg += `*المنتج:* ${qvCurrentProduct.name_ar || qvCurrentProduct.name}\n`;
   msg += `*المقاس المطلوب:* ${size}\n`;
   msg += `*الكمية:* ${qvQuantity}\n`;
-  msg += `*السعر:* ${totalPrice} ج.م\n`;
+  if (qvPricing.isBundleActive) {
+    msg += `*المجموع الأصلي:* ${qvPricing.normalSubtotal} ج.م\n`;
+    msg += `🎁 *عرض الباندل:* ${qvPricing.bundleApplied}\n`;
+    msg += `💰 *توفير الباندل:* ${qvPricing.discountAmount} ج.م\n`;
+    msg += `🔥 *الإجمالي النهائي للدفع:* ${qvPricing.finalTotal} ج.م\n`;
+  } else {
+    msg += `*السعر:* ${qvPricing.finalTotal} ج.م\n`;
+  }
   msg += `*طريقة الاستلام:* الدفع عند الاستلام مع المعاينة والقياس 🚚\n\n`;
   msg += `_أرجو تأكيد الطلب لإرسال الاسم والمحافظة والعنوان بالتفصيل._`;
 
@@ -844,12 +944,15 @@ function saveCart() {
 
 // Update Cart UI
 function updateCartUI() {
+  const pricing = calculateCartPricing(cart);
+
   const countEls = document.querySelectorAll('.cart-count');
-  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-  countEls.forEach(el => el.textContent = totalCount);
+  countEls.forEach(el => el.textContent = pricing.totalCount);
 
   const list = document.getElementById('cart-items-list');
   const totalEl = document.getElementById('cart-total');
+  const progressWrap = document.getElementById('cart-bundle-progress-wrap');
+  const breakdownEl = document.getElementById('cart-pricing-breakdown');
 
   if (!list) return;
 
@@ -864,11 +967,25 @@ function updateCartUI() {
         <button class="btn-primary" style="padding: 10px 24px; font-size: 0.88rem;" onclick="closeCartDrawer()">تصفح المنتجات</button>
       </div>
     `;
+    if (progressWrap) progressWrap.innerHTML = '';
+    if (breakdownEl) breakdownEl.innerHTML = '';
     if (totalEl) totalEl.textContent = `0 ${storeSettings.currency || 'ج.م'}`;
     return;
   }
 
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  // Render Bundle Progress Bar
+  if (progressWrap && pricing.upsellMessage) {
+    progressWrap.innerHTML = `
+      <div class="cart-bundle-progress-box">
+        <div class="cart-bundle-progress-text">
+          ${pricing.upsellMessage.text}
+        </div>
+        <div class="cart-bundle-bar-track">
+          <div class="cart-bundle-bar-fill ${pricing.upsellMessage.progress === 100 ? 'complete' : ''}" style="width: ${pricing.upsellMessage.progress}%"></div>
+        </div>
+      </div>
+    `;
+  }
 
   list.innerHTML = cart.map(item => `
     <div class="cart-item">
@@ -888,7 +1005,30 @@ function updateCartUI() {
     </div>
   `).join('');
 
-  if (totalEl) totalEl.textContent = `${subtotal} ${storeSettings.currency || 'ج.م'}`;
+  // Render Pricing Breakdown with Bundle savings
+  if (breakdownEl) {
+    if (pricing.isBundleActive) {
+      breakdownEl.innerHTML = `
+        <div class="cart-subtotal-row">
+          <span>المجموع قبل الخصم (${pricing.totalCount} قطع):</span>
+          <span style="text-decoration: line-through;">${pricing.normalSubtotal} ج.م</span>
+        </div>
+        <div class="cart-discount-row">
+          <span>🎁 خصم الباندل التلقائي:</span>
+          <span>-${pricing.discountAmount} ج.م</span>
+        </div>
+        <div style="font-size: 0.75rem; color: #22c55e; margin-bottom: 8px; font-weight: 700;">
+          ✓ ${pricing.bundleApplied}
+        </div>
+      `;
+    } else {
+      breakdownEl.innerHTML = '';
+    }
+  }
+
+  if (totalEl) {
+    totalEl.textContent = `${pricing.finalTotal} ${storeSettings.currency || 'ج.م'}`;
+  }
 }
 
 // Change Quantity
@@ -921,7 +1061,7 @@ window.checkoutViaWhatsApp = function() {
   const phone = storeSettings.whatsapp || "01277141615";
   const formattedPhone = phone.startsWith('0') ? '2' + phone : phone;
 
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const pricing = calculateCartPricing(cart);
   
   let msg = `*طلب جديد من موقع REIGN* 👑\n\n`;
   msg += `*المنتجات المطلوبة:*\n`;
@@ -934,7 +1074,14 @@ window.checkoutViaWhatsApp = function() {
   });
 
   msg += `--------------------------\n`;
-  msg += `*إجمالي الطلب:* ${subtotal} ج.م\n`;
+  if (pricing.isBundleActive) {
+    msg += `*المجموع قبل الخصم:* ${pricing.normalSubtotal} ج.م\n`;
+    msg += `🎁 *عرض الباندل المطبق:* ${pricing.bundleApplied}\n`;
+    msg += `💰 *إجمالي التوفير بالباندل:* ${pricing.discountAmount} ج.م\n`;
+    msg += `🔥 *الإجمالي النهائي المطلوب للدفع:* ${pricing.finalTotal} ج.م\n`;
+  } else {
+    msg += `*إجمالي الطلب:* ${pricing.finalTotal} ج.م\n`;
+  }
   msg += `*طريقة الدفع:* الدفع عند الاستلام مع إمكانية المعاينة والقياس 🚚\n\n`;
   msg += `_برجاء تأكيد الطلب لإرسال الاسم والعنوان بالتفصيل ورقم الهاتف._`;
 
@@ -983,3 +1130,154 @@ function showToast(msg) {
     toast.style.transform = 'translateY(20px)';
   }, 3200);
 }
+
+
+// ============================================================
+// BUNDLE BUILDER MODAL (Mix & Match 2 or 3 Pants)
+// ============================================================
+let activeBundleTargetCount = 2;
+
+window.openBundleBuilderModal = function(targetCount) {
+  activeBundleTargetCount = targetCount;
+  const modal = document.getElementById('bundle-builder-modal');
+  if (!modal) return;
+
+  const titleEl = document.getElementById('bundle-modal-title');
+  const badgeEl = document.getElementById('bundle-modal-badge');
+  const oldPriceEl = document.getElementById('bundle-modal-old-price');
+  const savingsEl = document.getElementById('bundle-modal-savings');
+  const finalPriceEl = document.getElementById('bundle-modal-final-price');
+
+  if (targetCount === 2) {
+    if (badgeEl) badgeEl.textContent = 'باندل الثنائي · الأكثر طلباً ⭐';
+    if (titleEl) titleEl.textContent = 'اختر أي 2 بنطلون بـ 1,500 ج.م فقط';
+    if (oldPriceEl) oldPriceEl.textContent = '1,740 ج.م';
+    if (savingsEl) savingsEl.textContent = '-240 ج.م (توفير إضافي)';
+    if (finalPriceEl) finalPriceEl.textContent = '1,500 ج.م';
+  } else {
+    if (badgeEl) badgeEl.textContent = 'باندل الترايو الذهبي · أعلى توفير 🔥';
+    if (titleEl) titleEl.textContent = 'اختر أي 3 بنطلونات بـ 2,000 ج.م فقط';
+    if (oldPriceEl) oldPriceEl.textContent = '2,610 ج.م';
+    if (savingsEl) savingsEl.textContent = '-610 ج.م (توفير كامل)';
+    if (finalPriceEl) finalPriceEl.textContent = '2,000 ج.م';
+  }
+
+  renderBundleBuilderSlots(targetCount);
+  modal.classList.add('active');
+};
+
+window.closeBundleBuilderModal = function() {
+  const modal = document.getElementById('bundle-builder-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+function renderBundleBuilderSlots(count) {
+  const container = document.getElementById('bundle-builder-slots');
+  if (!container) return;
+
+  // Available options
+  const defaultProducts = productsData && productsData.length ? productsData : [
+    { id: 'reign-signature-black', name_ar: 'أسود نفاث (Onyx Black)', image: 'assets/img/products/black_1_model.jpg' },
+    { id: 'reign-signature-grey', name_ar: 'رمادي ميلانج (Heather Grey)', image: 'assets/img/products/grey_1_model.jpg' },
+    { id: 'reign-signature-charcoal', name_ar: 'رمادي داكن شاركول (Charcoal Slate)', image: 'assets/img/products/charcoal_1_model.jpg' }
+  ];
+
+  let slotsHtml = '';
+  for (let i = 0; i < count; i++) {
+    // Pick initial product based on index
+    const initialProd = defaultProducts[i % defaultProducts.length];
+    slotsHtml += `
+      <div class="bundle-slot-selector" id="bundle-slot-${i}">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 0.82rem; font-weight: 800; color: #fff;">البنطلون رقم ${i + 1}:</span>
+          <span style="font-size: 0.72rem; color: #22c55e; font-weight: 700;">مشمول في الباندل ✓</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 4px;">اللون والموديل:</label>
+            <select class="form-control bundle-color-select" id="bundle-color-${i}" style="font-size: 0.82rem; padding: 8px;">
+              ${defaultProducts.map((p, idx) => `
+                <option value="${p.id}" ${p.id === initialProd.id ? 'selected' : ''}>
+                  ${p.name_ar || p.name}
+                </option>
+              `).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 4px;">المقاس المطلوب:</label>
+            <select class="form-control bundle-size-select" id="bundle-size-${i}" style="font-size: 0.82rem; padding: 8px;">
+              <option value="M, L" selected>M, L (ميديم / لارج)</option>
+              <option value="XL, XXL">XL, XXL (إكس لارج / 2 إكس)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  container.innerHTML = slotsHtml;
+}
+
+window.addBundleToCart = function() {
+  for (let i = 0; i < activeBundleTargetCount; i++) {
+    const prodId = document.getElementById(`bundle-color-${i}`).value;
+    const size = document.getElementById(`bundle-size-${i}`).value;
+    const product = productsData.find(p => p.id === prodId);
+    if (!product) continue;
+
+    const cartItemId = `${product.id}-${size}`;
+    const existing = cart.find(item => item.cartItemId === cartItemId);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({
+        cartItemId,
+        id: product.id,
+        name: product.name_ar || product.name,
+        price: product.price || 870,
+        image: product.image || 'assets/img/placeholder.svg',
+        size: size,
+        color: product.name_ar ? product.name_ar.split('—')[1] || '' : '',
+        qty: 1
+      });
+    }
+  }
+
+  saveCart();
+  updateCartUI();
+  closeBundleBuilderModal();
+  openCartDrawer();
+  showToast(`تمت إضافة تشكيلة الباندل (${activeBundleTargetCount} بنطلونات) إلى السلة بنجاح! 🎉`);
+};
+
+window.checkoutBundleViaWhatsApp = function() {
+  const phone = storeSettings.whatsapp || "01277141615";
+  const formattedPhone = phone.startsWith('0') ? '2' + phone : phone;
+
+  const bundleName = activeBundleTargetCount === 2 ? 'باندل الثنائي (أي 2 بنطلون بـ 1500 ج.م)' : 'باندل الترايو الثلاثي (أي 3 بنطلونات بـ 2000 ج.م)';
+  const originalPrice = activeBundleTargetCount === 2 ? 1740 : 2610;
+  const finalPrice = activeBundleTargetCount === 2 ? 1500 : 2000;
+  const savings = originalPrice - finalPrice;
+
+  let msg = `*طلب باندل جديد من موقع REIGN* 👑\n\n`;
+  msg += `*نوع الباندل المطلوب:* ${bundleName}\n\n`;
+  msg += `*التشكيلة المختارة:*\n`;
+
+  for (let i = 0; i < activeBundleTargetCount; i++) {
+    const prodId = document.getElementById(`bundle-color-${i}`).value;
+    const size = document.getElementById(`bundle-size-${i}`).value;
+    const product = productsData.find(p => p.id === prodId);
+    const prodName = product ? (product.name_ar || product.name) : 'بنطلون REIGN';
+    msg += `${i + 1}. *${prodName}* - مقاس: ${size}\n`;
+  }
+
+  msg += `\n--------------------------\n`;
+  msg += `*المجموع الأصلي:* ${originalPrice} ج.م\n`;
+  msg += `🎁 *خصم الباندل التلقائي:* -${savings} ج.م\n`;
+  msg += `🔥 *الإجمالي النهائي للدفع:* ${finalPrice} ج.م\n`;
+  msg += `*طريقة الدفع:* الدفع عند الاستلام مع إمكانية المعاينة والقياس 🚚\n\n`;
+  msg += `_برجاء تأكيد الطلب لإرسال الاسم والعنوان بالتفصيل ورقم الهاتف._`;
+
+  closeBundleBuilderModal();
+  const waUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, '_blank');
+};

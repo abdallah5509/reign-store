@@ -11,9 +11,13 @@
 
   <!-- Top Announcement Bar -->
   <div class="top-ticker">
-    <div class="top-ticker-content">
-      <span class="top-ticker-badge">توصيل لجميع المحافظات 🇪🇬</span>
-      <span>معاينة وقياس البنطلون عند الاستلام قبل الدفع لضمان راحتك ورضاك التام</span>
+    <div class="top-ticker-content" style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+      <span class="ticker-bundle-highlight">🔥 عروض الشتاء الكبرى</span>
+      <strong style="color: #fff;">أي 2 بنطلون بـ 1,500 ج.م</strong>
+      <span style="opacity: 0.4;">|</span>
+      <strong style="color: #22c55e;">أي 3 بنطلونات بـ 2,000 ج.م فقط!</strong>
+      <span style="opacity: 0.4;">|</span>
+      <span>معاينة وقياس قبل الدفع 🚚</span>
     </div>
   </div>
 
@@ -170,6 +174,112 @@
     </div>
   </section>
 
+  <!-- Mix & Match Bundle Section -->
+  <section class="bundle-section" id="bundles">
+    <div class="bundle-container">
+      <div class="bundle-header">
+        <span class="bundle-subtitle-badge">عروض الباندل والكميات · MIX & MATCH</span>
+        <h2 class="bundle-main-title">وفر أكثر مع باقات REIGN</h2>
+        <p class="bundle-intro-desc">
+          اختر أي تشكيلة ألوان ومقاسات تناسبك، ويتم تطبيق الخصم تلقائياً عند إضافة البناطيل لسلتك!
+        </p>
+      </div>
+
+      <div class="bundle-cards-grid">
+        
+        <!-- Bundle 1: Single Pants -->
+        <div class="bundle-tier-card">
+          <div class="bundle-card-label">قطعة واحدة · Single</div>
+          <h3 class="bundle-card-title">بنطلون واحد</h3>
+          <div class="bundle-price-box">
+            <span class="bundle-amount">870</span>
+            <span class="bundle-currency">ج.م</span>
+            <span class="bundle-old-price">1100 ج.م</span>
+            <span class="bundle-savings-tag">وفر 230 ج.م عن السعر الأصلي</span>
+          </div>
+          <ul class="bundle-perks-list">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              اختيار أي لون (أسود / رمادي / شاركول)
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              خامة ميلتون قطن مصري فاخر ثقيل
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              معاينة وقياس مع المندوب قبل الدفع
+            </li>
+          </ul>
+          <a href="#catalog" class="bundle-cta-btn" style="background: var(--bg-secondary); color: #fff; border: 1px solid var(--border-color);">
+            تصفح التشكيلة
+          </a>
+        </div>
+
+        <!-- Bundle 2: Duo Bundle (2 Pants = 1500) -->
+        <div class="bundle-tier-card featured">
+          <div class="bundle-tier-badge">الأكثر طلباً ⭐</div>
+          <div class="bundle-card-label" style="color: #fff;">باندل الثنائي · Duo Bundle</div>
+          <h3 class="bundle-card-title">أي 2 بنطلون من اختيارك</h3>
+          <div class="bundle-price-box">
+            <span class="bundle-amount">1,500</span>
+            <span class="bundle-currency">ج.م</span>
+            <span class="bundle-old-price">1,740 ج.م</span>
+            <span class="bundle-savings-tag">🔥 توفير 240 ج.م إضافية (750 ج.م للقطعة)</span>
+          </div>
+          <ul class="bundle-perks-list">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              شكّل الألوان والمقاسات بحرية تامة
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              خصم فوري 240 ج.م يطبق تلقائياً
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              إمكانية قياس البنطلونين عند الاستلام
+            </li>
+          </ul>
+          <button type="button" class="bundle-cta-btn" style="background: #ffffff; color: #000000;" onclick="openBundleBuilderModal(2)">
+            اختر قطعتين بـ 1500 ج.م ⚡
+          </button>
+        </div>
+
+        <!-- Bundle 3: Trio Bundle (3 Pants = 2000) -->
+        <div class="bundle-tier-card ultra">
+          <div class="bundle-tier-badge green">أعلى توفير 🔥</div>
+          <div class="bundle-card-label" style="color: #22c55e;">باندل الترايو الثلاثي · Full Trio</div>
+          <h3 class="bundle-card-title">أي 3 بنطلونات من اختيارك</h3>
+          <div class="bundle-price-box">
+            <span class="bundle-amount green">2,000</span>
+            <span class="bundle-currency">ج.م</span>
+            <span class="bundle-old-price">2,610 ج.م</span>
+            <span class="bundle-savings-tag">🚀 توفير 610 ج.م كاملة (666 ج.م للقطعة فقط!)</span>
+          </div>
+          <ul class="bundle-perks-list">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              احصل على الـ 3 ألوان أو كرّر المقاسات
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              أفضل سعر وأعلى توفير في مصر
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              معاينة وقياس لكافة القطع قبل الدفع
+            </li>
+          </ul>
+          <button type="button" class="bundle-cta-btn" style="background: #22c55e; color: #000000;" onclick="openBundleBuilderModal(3)">
+            اختر 3 قطع بـ 2000 ج.م 🔥
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- Products Catalog -->
   <section class="catalog-section" id="catalog">
     <div class="section-head">
@@ -272,13 +382,19 @@
         <button class="modal-close" id="cart-close-btn" style="position: static;">&times;</button>
       </div>
 
+      <!-- Bundle Progress Bar in Cart -->
+      <div id="cart-bundle-progress-wrap"></div>
+
       <div class="cart-items-list" id="cart-items-list">
         <!-- Rendered by app.js -->
       </div>
 
       <div class="cart-footer">
+        <div id="cart-pricing-breakdown">
+          <!-- Populated by app.js with subtotal, bundle discount, and final total -->
+        </div>
         <div class="cart-total-row" style="margin-bottom: 14px;">
-          <span>إجمالي الطلب:</span>
+          <span>الإجمالي النهائي للدفع:</span>
           <span id="cart-total">0 ج.م</span>
         </div>
 
@@ -292,6 +408,48 @@
         <p style="text-align: center; font-size: 0.76rem; color: #71717a; margin-top: 10px;">
           🚚 الدفع عند الاستلام مع إمكانية المعاينة قبل الدفع
         </p>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Bundle Builder Modal (Mix & Match) -->
+  <div class="modal-overlay" id="bundle-builder-modal">
+    <div class="bundle-modal-window">
+      <button class="modal-close" onclick="closeBundleBuilderModal()" title="إغلاق">&times;</button>
+      <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+        <span class="bundle-subtitle-badge" id="bundle-modal-badge">باندل التوفير</span>
+        <h3 id="bundle-modal-title" style="font-size: 1.4rem; font-weight: 800; color: #fff; margin: 4px 0 6px 0;">اختر تشكيلة الباندل</h3>
+        <p id="bundle-modal-desc" style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">حدد الألوان والمقاسات التي تناسبك وسنقوم بتجهيزها لك فوراً.</p>
+      </div>
+
+      <div id="bundle-builder-slots">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px; margin-top: 16px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 0.88rem; color: var(--text-secondary);">المجموع الأصلي:</span>
+          <span id="bundle-modal-old-price" style="text-decoration: line-through; color: var(--text-muted); font-family: var(--font-en);">1,740 ج.م</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 0.88rem; color: #22c55e; font-weight: 700;">توفير الباندل:</span>
+          <span id="bundle-modal-savings" style="color: #22c55e; font-weight: 800;">-240 ج.م</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--border-color);">
+          <span style="font-size: 1rem; font-weight: 800; color: #fff;">السعر الإجمالي للباندل:</span>
+          <span id="bundle-modal-final-price" style="font-size: 1.5rem; font-weight: 900; color: #fff; font-family: var(--font-en);">1,500 ج.م</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; flex-direction: column;">
+        <button type="button" class="btn-primary" id="btn-bundle-add-cart" style="padding: 14px; font-size: 0.95rem; font-weight: 800; justify-content: center;" onclick="addBundleToCart()">
+          أضف الباندل إلى سلة المشتريات 🛒
+        </button>
+        <button type="button" class="btn-checkout-whatsapp" style="padding: 13px; font-size: 0.92rem; justify-content: center;" onclick="checkoutBundleViaWhatsApp()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.214 8.214 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.64c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.3z"/></svg>
+          اطلب الباندل مباشرة عبر واتساب
+        </button>
       </div>
     </div>
   </div>
