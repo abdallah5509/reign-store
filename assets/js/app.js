@@ -106,32 +106,71 @@ async function loadSettings() {
   }
 }
 
-// Load Products from LocalStorage, API, or static fallback
+// Load Products with Smart Versioning (Checks localStorage -> API -> data/products.json)
+const CURRENT_PRODUCTS_VERSION = 'v2.2_four_photos';
+
 async function loadProducts() {
+  const savedVersion = localStorage.getItem('reign_products_version');
   const customProds = localStorage.getItem('reign_custom_products');
-  if (customProds) {
+
+  // If already on latest 4-image version and custom products exist, use it
+  if (customProds && savedVersion === CURRENT_PRODUCTS_VERSION) {
     try {
       productsData = JSON.parse(customProds);
       renderProducts();
       return;
     } catch (e) {}
   }
+
+  // Fetch latest products from server with cache buster
+  let baseProducts = [];
   try {
     const res = await fetch('/api/products');
     if (res.ok) {
-      productsData = await res.json();
+      baseProducts = await res.json();
     } else {
-      const fallback = await fetch('data/products.json');
-      productsData = await fallback.json();
+      const fallback = await fetch('data/products.json?v=' + Date.now());
+      baseProducts = await fallback.json();
     }
   } catch (e) {
     try {
-      const fallback = await fetch('data/products.json');
-      productsData = await fallback.json();
+      const fallback = await fetch('data/products.json?v=' + Date.now());
+      baseProducts = await fallback.json();
     } catch (err) {
       console.error('Failed to load products', err);
     }
   }
+
+  // If user previously customized stock/prices, merge them with the fresh 4-photo data
+  if (baseProducts && baseProducts.length) {
+    if (customProds) {
+      try {
+        const customList = JSON.parse(customProds);
+        baseProducts = baseProducts.map(bp => {
+          const customItem = customList.find(c => c.id === bp.id);
+          if (customItem) {
+            return {
+              ...bp,
+              stock: customItem.stock !== undefined ? customItem.stock : bp.stock,
+              price: customItem.price !== undefined ? customItem.price : bp.price,
+              old_price: customItem.old_price !== undefined ? customItem.old_price : bp.old_price,
+              discount: customItem.discount !== undefined ? customItem.discount : bp.discount,
+              has_discount: customItem.has_discount !== undefined ? customItem.has_discount : bp.has_discount,
+              images: (customItem.images && customItem.images.some(img => typeof img === 'string' && img.startsWith('data:'))) ? customItem.images : bp.images,
+              image: (customItem.image && typeof customItem.image === 'string' && customItem.image.startsWith('data:')) ? customItem.image : bp.image,
+              hover_image: (customItem.hover_image && typeof customItem.hover_image === 'string' && customItem.hover_image.startsWith('data:')) ? customItem.hover_image : bp.hover_image
+            };
+          }
+          return bp;
+        });
+      } catch (e) {}
+    }
+
+    productsData = baseProducts;
+    localStorage.setItem('reign_custom_products', JSON.stringify(productsData));
+    localStorage.setItem('reign_products_version', CURRENT_PRODUCTS_VERSION);
+  }
+
   renderProducts();
 }
 

@@ -681,6 +681,10 @@
           </p>
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-dark" style="font-size: 0.82rem; border-color: rgba(255,255,255,0.2);" onclick="resetToOfficialProducts()" title="تحديث واستعادة صور وبيانات الـ 4 صور الأصلية لكل منتج من السيرفر">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            تحديث الصور للأصلية (4 صور)
+          </button>
           <button class="btn btn-dark" style="font-size: 0.82rem;" onclick="downloadProductsJson()" title="تحميل ملف products.json بالمواصفات والأسعار المحدثة">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             تصدير products.json
@@ -793,35 +797,29 @@
             </div>
           </div>
 
-          <!-- Image 1: Main Image -->
-          <div class="form-group full">
-            <label>رابط الصورة الأساسية للمنتج:</label>
-            <input type="text" id="edit-image-url" class="form-control" placeholder="assets/img/products/model_black.jpg">
-            <div class="upload-preview-box">
-              <img id="preview-main-img" src="" class="upload-preview-img" alt="معاينة">
-              <div style="flex-grow: 1;">
-                <label style="font-size: 0.75rem; color: #fff; cursor: pointer; display: inline-block; background: var(--bg-secondary); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-color);">
-                  📁 رفع صورة من جهازك
-                  <input type="file" accept="image/*" style="display: none;" onchange="uploadImageFile(this, 'edit-image-url', 'preview-main-img')">
-                </label>
-                <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">يمكنك كتابة الرابط مباشرة أو رفع صورة جديدة</div>
+          <!-- Gallery Section (4 Product Photos + Extra) -->
+          <div class="form-group full" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 16px; margin-top: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <label style="font-weight: 800; color: #fff; font-size: 0.95rem; margin-bottom: 3px; display: block;">معرض صور المنتج (Product Images — 4 صور):</label>
+                <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0;">
+                  ارفع حتى 4 صور (أو أكثر) لكل منتج مباشرة من جهازك، أو اختر من الصور الجاهزة. ستظهر في كروت المتجر والمعاينة السريعة.
+                </p>
               </div>
+              <button type="button" class="btn btn-dark" style="font-size: 0.78rem; padding: 5px 12px;" onclick="addExtraGallerySlot()">+ إضافة صورة إضافية</button>
             </div>
-          </div>
 
-          <!-- Image 2: Hover / Detail Image -->
-          <div class="form-group full">
-            <label>صورة التفاصيل عند تمرير الماوس (Hover Image):</label>
-            <input type="text" id="edit-hover-url" class="form-control" placeholder="assets/img/products/waistband_detail.jpg">
-            <div class="upload-preview-box">
-              <img id="preview-hover-img" src="" class="upload-preview-img" alt="معاينة">
-              <div style="flex-grow: 1;">
-                <label style="font-size: 0.75rem; color: #fff; cursor: pointer; display: inline-block; background: var(--bg-secondary); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-color);">
-                  📁 رفع صورة من جهازك
-                  <input type="file" accept="image/*" style="display: none;" onchange="uploadImageFile(this, 'edit-hover-url', 'preview-hover-img')">
-                </label>
-                <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">تظهر عندما يقف الزائر بالماوس على كارت المنتج</div>
-              </div>
+            <!-- Quick Presets -->
+            <div style="margin-bottom: 14px; background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 1px solid var(--border-color);">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">⚡ تعيين صور جاهزة بسرعة:</span>
+              <button type="button" class="btn btn-dark" style="padding: 3px 9px; font-size: 0.72rem;" onclick="applyPresetImages('black')">صور الأسود (4)</button>
+              <button type="button" class="btn btn-dark" style="padding: 3px 9px; font-size: 0.72rem;" onclick="applyPresetImages('grey')">صور الرمادي (4)</button>
+              <button type="button" class="btn btn-dark" style="padding: 3px 9px; font-size: 0.72rem;" onclick="applyPresetImages('charcoal')">صور الشاركول (4)</button>
+            </div>
+
+            <!-- Gallery Slots List -->
+            <div id="gallery-slots-container" style="display: flex; flex-direction: column; gap: 10px;">
+              <!-- Populated dynamically by renderGallerySlots() -->
             </div>
           </div>
 
@@ -934,10 +932,14 @@
     }
 
     // Products (Checks localStorage -> API -> static data/products.json)
+    const CURRENT_PRODUCTS_VERSION = 'v2.2_four_photos';
+
     async function loadProducts() {
-      // 1. Check custom saved products in localStorage
+      const savedVersion = localStorage.getItem('reign_products_version');
       const customProds = localStorage.getItem('reign_custom_products');
-      if (customProds) {
+
+      // If already on latest version and custom products exist, use it
+      if (customProds && savedVersion === CURRENT_PRODUCTS_VERSION) {
         try {
           productsList = JSON.parse(customProds);
           renderProducts();
@@ -945,25 +947,62 @@
         } catch (e) {}
       }
 
-      // 2. Try backend API (if running with python server)
+      // Otherwise fetch fresh data/products.json
+      let baseList = [];
       try {
         const res = await fetch('/api/products');
         if (res.ok) {
-          productsList = await res.json();
-          renderProducts();
-          return;
+          baseList = await res.json();
+        } else {
+          const fallback = await fetch('data/products.json?v=' + Date.now());
+          baseList = await fallback.json();
         }
-      } catch (e) {}
+      } catch (e) {
+        try {
+          const fallback = await fetch('data/products.json?v=' + Date.now());
+          baseList = await fallback.json();
+        } catch (err) {
+          console.error('Products load error', err);
+        }
+      }
 
-      // 3. Fallback to static data/products.json (Cloudflare Pages)
-      try {
-        const fallback = await fetch('data/products.json');
-        if (fallback.ok) {
-          productsList = await fallback.json();
-          renderProducts();
+      // Merge existing custom stock/prices with fresh 4-photos
+      if (baseList && baseList.length) {
+        if (customProds) {
+          try {
+            const customList = JSON.parse(customProds);
+            baseList = baseList.map(bp => {
+              const customItem = customList.find(c => c.id === bp.id);
+              if (customItem) {
+                return {
+                  ...bp,
+                  stock: customItem.stock !== undefined ? customItem.stock : bp.stock,
+                  price: customItem.price !== undefined ? customItem.price : bp.price,
+                  old_price: customItem.old_price !== undefined ? customItem.old_price : bp.old_price,
+                  discount: customItem.discount !== undefined ? customItem.discount : bp.discount,
+                  has_discount: customItem.has_discount !== undefined ? customItem.has_discount : bp.has_discount,
+                  images: (customItem.images && customItem.images.some(img => typeof img === 'string' && img.startsWith('data:'))) ? customItem.images : bp.images,
+                  image: (customItem.image && typeof customItem.image === 'string' && customItem.image.startsWith('data:')) ? customItem.image : bp.image,
+                  hover_image: (customItem.hover_image && typeof customItem.hover_image === 'string' && customItem.hover_image.startsWith('data:')) ? customItem.hover_image : bp.hover_image
+                };
+              }
+              return bp;
+            });
+          } catch (e) {}
         }
-      } catch (err) {
-        console.error('Products load error', err);
+        productsList = baseList;
+        localStorage.setItem('reign_custom_products', JSON.stringify(productsList));
+        localStorage.setItem('reign_products_version', CURRENT_PRODUCTS_VERSION);
+      }
+      renderProducts();
+    }
+
+    function resetToOfficialProducts() {
+      if (confirm('هل أنت متأكد من استعادة الصور والبيانات الأصلية (4 صور لكل منتج) من السيرفر؟')) {
+        localStorage.removeItem('reign_custom_products');
+        localStorage.removeItem('reign_products_version');
+        loadProducts();
+        showToast('تمت استعادة صور وبيانات المنتجات الأصلية بنجاح!');
       }
     }
 
@@ -984,10 +1023,17 @@
         const stock = p.stock !== undefined ? Number(p.stock) : 50;
         const isSoldOut = stock <= 0;
 
+        const cardImgs = (p.images && p.images.length) ? p.images : [p.image, p.hover_image].filter(Boolean);
         return `
           <div class="admin-prod-card" id="admin-card-${p.id}">
             <div class="admin-prod-media">
               <img src="${p.image || 'assets/img/placeholder.svg'}" class="admin-prod-img" alt="${p.name_ar || p.name}">
+              <div style="position: absolute; bottom: 8px; right: 8px; display: flex; gap: 4px; background: rgba(0,0,0,0.7); padding: 3px 6px; border-radius: 4px; backdrop-filter: blur(4px); z-index: 2;">
+                ${cardImgs.slice(0, 4).map((im, idx) => `
+                  <img src="${im}" style="width: 22px; height: 22px; object-fit: cover; border-radius: 2px; border: 1px solid rgba(255,255,255,0.4);" title="صورة ${idx+1}">
+                `).join('')}
+                <span style="font-size: 0.7rem; color: #fff; align-self: center; margin-right: 2px; font-weight: 700;">${cardImgs.length} صور</span>
+              </div>
               ${isSoldOut ? `
                 <span class="admin-prod-badge" style="background: #dc2626; color: #fff;">نفدت الكمية · 0 قطع</span>
               ` : (p.badge ? `<span class="admin-prod-badge">${p.badge}</span>` : '')}
@@ -1177,11 +1223,9 @@
       document.getElementById('edit-has-discount').checked = hasDiscount;
       document.getElementById('edit-discount-text').value = p.discount || '';
 
-      document.getElementById('edit-image-url').value = p.image || '';
-      document.getElementById('preview-main-img').src = p.image || '';
-
-      document.getElementById('edit-hover-url').value = p.hover_image || '';
-      document.getElementById('preview-hover-img').src = p.hover_image || '';
+      // Populate 4 Gallery Images
+      const pImages = (p.images && p.images.length) ? p.images : [p.image, p.hover_image].filter(Boolean);
+      setGalleryImages(pImages);
 
       document.getElementById('edit-badge').value = p.badge || '';
       document.getElementById('edit-category').value = p.category || 'wide-leg';
@@ -1204,10 +1248,13 @@
       document.getElementById('edit-old-price').value = 1100;
       document.getElementById('edit-has-discount').checked = true;
       document.getElementById('edit-discount-text').value = 'وفر 230 ج.م';
-      document.getElementById('edit-image-url').value = 'assets/img/products/model_black.jpg';
-      document.getElementById('preview-main-img').src = 'assets/img/products/model_black.jpg';
-      document.getElementById('edit-hover-url').value = 'assets/img/products/waistband_detail.jpg';
-      document.getElementById('preview-hover-img').src = 'assets/img/products/waistband_detail.jpg';
+      // Populate default 4 images for new product
+      setGalleryImages([
+        'assets/img/products/black_1_model.jpg',
+        'assets/img/products/black_2_front.jpg',
+        'assets/img/products/black_3_detail.jpg',
+        'assets/img/products/black_4_side.png'
+      ]);
       document.getElementById('edit-badge').value = 'جديد';
       document.getElementById('edit-category').value = 'wide-leg';
       document.getElementById('edit-sizes').value = 'M, L | XL, XXL';
@@ -1251,9 +1298,15 @@
       const sizesRaw = document.getElementById('edit-sizes').value;
       const sizes = sizesRaw.split('|').map(s => s.trim()).filter(Boolean);
 
-      const imgMain = document.getElementById('edit-image-url').value.trim();
-      const imgHover = document.getElementById('edit-hover-url').value.trim();
-      const imagesArr = [imgMain, imgHover, 'assets/img/products/reign_hangers.jpg'].filter(Boolean);
+      // Collect all images from gallery slots
+      const galleryImgs = [];
+      document.querySelectorAll('.gallery-slot-input').forEach(inp => {
+        const v = inp.value.trim();
+        if (v) galleryImgs.push(v);
+      });
+
+      const imgMain = galleryImgs[0] || 'assets/img/placeholder.svg';
+      const imgHover = galleryImgs[1] || imgMain;
 
       const productObj = {
         id: pid || `reign-${Date.now()}`,
@@ -1269,7 +1322,7 @@
         discount: hasDiscount ? discountText : null,
         image: imgMain,
         hover_image: imgHover,
-        images: imagesArr,
+        images: galleryImgs.length ? galleryImgs : [imgMain, imgHover],
         badge: document.getElementById('edit-badge').value.trim(),
         category: document.getElementById('edit-category').value,
         sizes: sizes.length ? sizes : ['M, L', 'XL, XXL']
@@ -1305,32 +1358,171 @@
       showToast(isNew ? 'تمت إضافة المنتج وحفظه بنجاح!' : 'تم تعديل المنتج والأسعار وتحديثها فوراً على المتجر!');
     }
 
-    // Image Upload Handler
-    async function uploadImageFile(fileInput, targetInputId, previewImgId) {
+    // ============================================================
+    // Gallery & Image Upload Management System (4 Photos + Extra)
+    // ============================================================
+    let currentGalleryImages = [];
+
+    function setGalleryImages(imgs) {
+      currentGalleryImages = Array.isArray(imgs) ? [...imgs] : [];
+      while (currentGalleryImages.length < 4) {
+        currentGalleryImages.push('');
+      }
+      renderGallerySlots();
+    }
+
+    function renderGallerySlots() {
+      const container = document.getElementById('gallery-slots-container');
+      if (!container) return;
+
+      const slotLabels = [
+        'الصورة 1 (الأساسية على الموديل - Main)',
+        'الصورة 2 (مفرود Flat-Lay / عند تمرير الماوس Hover)',
+        'الصورة 3 (تفاصيل الخامة والتطريز Detail)',
+        'الصورة 4 (زاوية جانبية أو مطوي Side View)'
+      ];
+
+      container.innerHTML = currentGalleryImages.map((src, i) => {
+        const label = slotLabels[i] || `صورة إضافية رقم ${i + 1}`;
+        return `
+          <div class="gallery-slot-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; gap: 12px;">
+            <img id="slot-preview-${i}" src="${src || 'assets/img/placeholder.svg'}" class="upload-preview-img" style="width: 54px; height: 54px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color); background: #111;" alt="صورة ${i+1}">
+            
+            <div style="flex-grow: 1; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: #fff;">${label}</span>
+                ${i >= 4 ? `<button type="button" onclick="removeGallerySlot(${i})" style="background:none; border:none; color:#ef4444; font-size:0.75rem; cursor:pointer;">حذف</button>` : ''}
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="gallery-slot-${i}" class="form-control gallery-slot-input" style="font-size: 0.8rem; padding: 6px 10px;" value="${src || ''}" placeholder="assets/img/products/... أو رابط صورة أو صورة مرفوعة" oninput="updateSlotPreview(${i})">
+                <label class="btn btn-dark" style="cursor: pointer; padding: 6px 12px; font-size: 0.78rem; white-space: nowrap; margin: 0; display: flex; align-items: center; gap: 4px;">
+                  📁 رفع
+                  <input type="file" accept="image/*" style="display:none;" onchange="handleDeviceImageUpload(this, ${i})">
+                </label>
+                <button type="button" class="btn btn-dark" style="padding: 6px 8px; font-size: 0.75rem; color: #a1a1aa;" onclick="clearGallerySlot(${i})" title="مسح">✕</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateSlotPreview(i) {
+      const input = document.getElementById(`gallery-slot-${i}`);
+      const preview = document.getElementById(`slot-preview-${i}`);
+      if (input && preview) {
+        preview.src = input.value.trim() || 'assets/img/placeholder.svg';
+        currentGalleryImages[i] = input.value.trim();
+      }
+    }
+
+    function clearGallerySlot(i) {
+      const input = document.getElementById(`gallery-slot-${i}`);
+      const preview = document.getElementById(`slot-preview-${i}`);
+      if (input) input.value = '';
+      if (preview) preview.src = 'assets/img/placeholder.svg';
+      currentGalleryImages[i] = '';
+    }
+
+    function addExtraGallerySlot() {
+      currentGalleryImages.push('');
+      renderGallerySlots();
+    }
+
+    function removeGallerySlot(i) {
+      currentGalleryImages.splice(i, 1);
+      renderGallerySlots();
+    }
+
+    function applyPresetImages(color) {
+      let presets = [];
+      if (color === 'black') {
+        presets = [
+          'assets/img/products/black_1_model.jpg',
+          'assets/img/products/black_2_front.jpg',
+          'assets/img/products/black_3_detail.jpg',
+          'assets/img/products/black_4_side.png'
+        ];
+      } else if (color === 'grey') {
+        presets = [
+          'assets/img/products/grey_1_model.jpg',
+          'assets/img/products/grey_2_front.jpg',
+          'assets/img/products/grey_3_detail.jpg',
+          'assets/img/products/grey_4_side.jpg'
+        ];
+      } else if (color === 'charcoal') {
+        presets = [
+          'assets/img/products/charcoal_1_model.jpg',
+          'assets/img/products/charcoal_2_front.jpg',
+          'assets/img/products/charcoal_3_detail.jpg',
+          'assets/img/products/charcoal_4_side.jpg'
+        ];
+      }
+      setGalleryImages(presets);
+      showToast(`تم تعيين الـ 4 صور الجاهزة للون ${color}!`);
+    }
+
+    // High-performance client-side image optimizer & uploader
+    // Works 100% offline and on static Cloudflare Pages with zero server dependencies
+    function handleDeviceImageUpload(fileInput, slotIndex) {
       const file = fileInput.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = async function(e) {
-        const base64Data = e.target.result;
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              filename: file.name,
-              data: base64Data
-            })
-          });
-          const json = await res.json();
-          if (json.ok && json.url) {
-            document.getElementById(targetInputId).value = json.url;
-            document.getElementById(previewImgId).src = json.url;
-            showToast('تم رفع الصورة بنجاح!');
+      reader.onload = function(e) {
+        const rawData = e.target.result;
+        
+        // Client-side canvas compression to 1080px max dimension, quality 0.84 (~60KB)
+        const img = new Image();
+        img.onload = function() {
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1080;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
           }
-        } catch (err) {
-          alert('تعذر رفع الصورة عبر السيرفر، يمكنك إدخال الرابط يدوياً');
-        }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.84);
+
+          const input = document.getElementById(`gallery-slot-${slotIndex}`);
+          const preview = document.getElementById(`slot-preview-${slotIndex}`);
+          if (input) input.value = optimizedDataUrl;
+          if (preview) preview.src = optimizedDataUrl;
+          currentGalleryImages[slotIndex] = optimizedDataUrl;
+
+          // Also attempt background save if local server is active
+          try {
+            fetch('/api/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                filename: file.name.replace(/\.[^/.]+$/, "") + ".jpg",
+                data: optimizedDataUrl
+              })
+            }).then(r => r.json()).then(json => {
+              if (json && json.ok && json.url) {
+                if (input) input.value = json.url;
+                if (preview) preview.src = json.url;
+                currentGalleryImages[slotIndex] = json.url;
+              }
+            }).catch(() => {});
+          } catch (err) {}
+
+          showToast(`تم رفع وضبط الصورة رقم ${slotIndex + 1} بنجاح!`);
+        };
+        img.src = rawData;
       };
       reader.readAsDataURL(file);
     }

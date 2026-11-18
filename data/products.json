@@ -12,8 +12,8 @@
     "featured": true,
     "badge": "الأكثر طلباً",
     "badge_en": "Best Seller",
-    "image": "assets/img/products/model_black.jpg",
-    "hover_image": "assets/img/products/waistband_detail.jpg",
+    "image": "assets/img/products/black_1_model.jpg",
+    "hover_image": "assets/img/products/black_2_front.jpg",
     "description": "سويت بانتس بقصة وايد ليج واسعة من خامة ميلتون قطن مصري فاخر ثقيل وفائق النعومة مع تطريز بارز لشعار REIGN، كمر مطاطي متين مع تكت جودة فاخرة وجيوب جانبية عميقة.",
     "features": [
       "خامة قطن مصري ثقيل (Heavyweight Cotton Fleece) بنعومة فائقة",
@@ -30,9 +30,10 @@
     "stock": 50,
     "has_discount": true,
     "images": [
-      "assets/img/products/model_black.jpg",
-      "assets/img/products/waistband_detail.jpg",
-      "assets/img/products/reign_hangers.jpg"
+      "assets/img/products/black_1_model.jpg",
+      "assets/img/products/black_2_front.jpg",
+      "assets/img/products/black_3_detail.jpg",
+      "assets/img/products/black_4_side.png"
     ]
   },
   {
@@ -48,8 +49,8 @@
     "featured": true,
     "badge": "إصدار شتوي",
     "badge_en": "Winter Drop",
-    "image": "assets/img/products/model_grey.jpg",
-    "hover_image": "assets/img/products/reign_hangers.jpg",
+    "image": "assets/img/products/grey_1_model.jpg",
+    "hover_image": "assets/img/products/grey_2_front.jpg",
     "description": "سويت بانتس بلون رمادي ميلانج فاخر، نسيج حراري خفيف الوزن وقوي التماسك يسمح بالتنفس ويوفر راحة مطلقة طوال اليوم.",
     "features": [
       "نسيج قطني ممشط فائق النعومة",
@@ -65,8 +66,10 @@
     "stock": 50,
     "has_discount": true,
     "images": [
-      "assets/img/products/model_grey.jpg",
-      "assets/img/products/reign_hangers.jpg"
+      "assets/img/products/grey_1_model.jpg",
+      "assets/img/products/grey_2_front.jpg",
+      "assets/img/products/grey_3_detail.jpg",
+      "assets/img/products/grey_4_side.jpg"
     ]
   },
   {
@@ -82,8 +85,8 @@
     "featured": false,
     "badge": "حصري",
     "badge_en": "Exclusive",
-    "image": "assets/img/products/model_charcoal.jpg",
-    "hover_image": "assets/img/products/waistband_detail.jpg",
+    "image": "assets/img/products/charcoal_1_model.jpg",
+    "hover_image": "assets/img/products/charcoal_2_front.jpg",
     "description": "تصميم رياضي عصري يجمع بين عملية الجيم وأناقة الستريت وير، مقاوم للتمزق ويوفر مرونة غير مقيدة في كل حركة.",
     "features": [
       "قماش قطني ثقيل يمنح دفئاً وملمساً ناعماً",
@@ -98,9 +101,10 @@
     "stock": 50,
     "has_discount": true,
     "images": [
-      "assets/img/products/model_charcoal.jpg",
-      "assets/img/products/waistband_detail.jpg",
-      "assets/img/products/reign_hangers.jpg"
+      "assets/img/products/charcoal_1_model.jpg",
+      "assets/img/products/charcoal_2_front.jpg",
+      "assets/img/products/charcoal_3_detail.jpg",
+      "assets/img/products/charcoal_4_side.jpg"
     ]
   }
 ]
