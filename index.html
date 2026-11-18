@@ -9,15 +9,24 @@
 </head>
 <body>
 
-  <!-- Top Announcement Bar -->
-  <div class="top-ticker">
-    <div class="top-ticker-content" style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
-      <span class="ticker-bundle-highlight">🔥 عروض الشتاء الكبرى</span>
-      <strong style="color: #fff;">أي 2 بنطلون بـ 1,500 ج.م</strong>
-      <span style="opacity: 0.4;">|</span>
-      <strong style="color: #22c55e;">أي 3 بنطلونات بـ 2,000 ج.م فقط!</strong>
-      <span style="opacity: 0.4;">|</span>
-      <span>معاينة وقياس قبل الدفع 🚚</span>
+  <!-- Top Message Notification Bar ("ماسدج فوق بتعرفني") -->
+  <div class="top-notification-bar" id="top-notification-bar" onclick="openBundleBuilderModal(2)" title="اضغط هنا لاختيار عروض الباندل">
+    <div class="top-notification-content">
+      <div class="notification-pill-badge">
+        <span class="pulsing-live-dot"></span>
+        <span>عرض خاص لفترة محدودة</span>
+      </div>
+      <div class="notification-main-text">
+        <span>اشتري أي <strong>2 بنطلون بـ 1,500 ج.م</strong> (بدلاً من <del style="opacity: 0.6;">1,740</del>)</span>
+        <span class="notification-sep">|</span>
+        <span>أو أي <strong>3 بناطيل بـ 2,000 ج.م</strong> فقط (وفر <span style="color: #22c55e; font-weight: 800;">610 ج.م</span> كاملة)! 🔥</span>
+        <span class="notification-sep">|</span>
+        <span style="font-size: 0.78rem; opacity: 0.9;">معاينة وقياس قبل الدفع 🚚</span>
+      </div>
+      <div class="notification-cta-pill">
+        <span>احصل على العرض</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
     </div>
   </div>
 
@@ -117,6 +126,76 @@
             </div>
 
           </div>
+        </div>
+      </div>
+
+      <!-- Promotional Ad Banner (مباشرة بعد الـ 3 صور) -->
+      <div class="hero-promo-ad-banner" id="hero-promo-ad">
+        <div class="promo-ad-inner">
+          
+          <!-- Top Ad Badge & Header -->
+          <div class="promo-ad-header">
+            <span class="promo-ad-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              إعلان عرض الشتاء الرسمي من REIGN
+            </span>
+            <h2 class="promo-ad-title">وفر حتى 610 ج.م مع باقات التوفير</h2>
+            <p class="promo-ad-desc">
+              اختر أي تشكيلة ألوان ومقاسات تناسبك من سويت بانتس REIGN الوايد ليج، واستمتع بأقوى خصم مع إمكانية المعاينة والقياس عند الاستلام!
+            </p>
+          </div>
+
+          <!-- Two High-Impact Offer Boxes -->
+          <div class="promo-ad-offers-grid">
+            
+            <!-- Offer 1: 2 for 1500 -->
+            <div class="promo-offer-box" onclick="openBundleBuilderModal(2)">
+              <div class="promo-offer-tag">الأكثر طلباً ⭐</div>
+              <div class="promo-offer-count">عرض الـ 2 بنطلون</div>
+              <div class="promo-offer-price-wrap">
+                <span class="promo-offer-price">1,500</span>
+                <span class="promo-offer-curr">ج.م</span>
+                <span class="promo-offer-old">بدلاً من 1,740</span>
+              </div>
+              <div class="promo-offer-save">🔥 توفير 240 ج.م إضافية (750 ج.م للقطعة)</div>
+              <button type="button" class="promo-offer-btn" onclick="event.stopPropagation(); openBundleBuilderModal(2)">
+                اطلب قطعتين بـ 1,500 ج.م ⚡
+              </button>
+            </div>
+
+            <!-- Offer 2: 3 for 2000 -->
+            <div class="promo-offer-box highlight" onclick="openBundleBuilderModal(3)">
+              <div class="promo-offer-tag green">أعلى توفير 🔥</div>
+              <div class="promo-offer-count">عرض الـ 3 بناطيل (كل الألوان)</div>
+              <div class="promo-offer-price-wrap">
+                <span class="promo-offer-price green">2,000</span>
+                <span class="promo-offer-curr">ج.م</span>
+                <span class="promo-offer-old">بدلاً من 2,610</span>
+              </div>
+              <div class="promo-offer-save green">🚀 توفير 610 ج.م كاملة (666 ج.م للقطعة فقط!)</div>
+              <button type="button" class="promo-offer-btn green" onclick="event.stopPropagation(); openBundleBuilderModal(3)">
+                اطلب 3 قطع بـ 2,000 ج.م 🔥
+              </button>
+            </div>
+
+          </div>
+
+          <!-- 3 Pants Color Preview Thumbnails Strip -->
+          <div class="promo-ad-footer-preview">
+            <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700;">الألوان المشمولة في العرض:</span>
+            <div class="promo-ad-colors">
+              <span class="promo-color-pill">
+                <img src="assets/img/products/black_1_model.jpg" alt="Black"> أسود نفاث
+              </span>
+              <span class="promo-color-pill">
+                <img src="assets/img/products/grey_1_model.jpg" alt="Grey"> رمادي ميلانج
+              </span>
+              <span class="promo-color-pill">
+                <img src="assets/img/products/charcoal_1_model.jpg" alt="Charcoal"> رمادي داكن شاركول
+              </span>
+            </div>
+          </div>
+
         </div>
       </div>
 
