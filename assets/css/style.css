@@ -1830,10 +1830,11 @@ body.dark-theme .btn-qv-wa {
   font-weight: 900;
   letter-spacing: 0.14em;
   margin-bottom: 12px;
+  color: #ffffff;
 }
 
 .footer-desc {
-  color: var(--text-secondary);
+  color: #a1a1aa;
   font-size: 0.92rem;
   line-height: 1.6;
   max-width: 320px;
@@ -1855,10 +1856,16 @@ body.dark-theme .btn-qv-wa {
 }
 
 .footer-links a {
-  color: var(--text-secondary);
+  color: #a1a1aa;
   text-decoration: none;
   font-size: 0.9rem;
   transition: var(--transition);
+}
+
+.main-footer .btn-primary {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
 }
 
 .footer-links a:hover {
