@@ -312,7 +312,7 @@ function renderProducts() {
           </div>
 
           <div class="size-selector-row">
-            <span style="font-size: 0.78rem; color: #a1a1aa; margin-left: 6px;">المقاس:</span>
+            <span class="size-selector-label">المقاس:</span>
             ${(p.sizes || ['M, L', 'XL, XXL']).map((s, idx) => `
               <button 
                 type="button" 
@@ -443,30 +443,32 @@ window.openQuickView = function(productId) {
 
       <!-- Info & Order Column -->
       <div class="qv-info-col">
-        ${p.badge ? `<span class="qv-badge">${p.badge}</span>` : ''}
-        <h2 class="qv-title">${p.name_ar || p.name}</h2>
-        <p class="qv-sub">${p.subtitle_ar || p.subtitle || ''}</p>
+        <div class="qv-head-group">
+          ${p.badge ? `<span class="qv-badge">${p.badge}</span>` : ''}
+          <h2 class="qv-title">${p.name_ar || p.name}</h2>
+          <p class="qv-sub">${p.subtitle_ar || p.subtitle || ''}</p>
 
-        <div class="qv-price-row">
-          <span class="qv-price" id="qv-dynamic-price">${p.price} ${currency}</span>
-          ${hasDiscount ? `<span class="qv-old-price">${p.old_price} ${currency}</span>` : ''}
-          ${hasDiscount ? `<span class="product-discount-tag">${discountText}</span>` : ''}
-          ${isSoldOut ? `<span class="stock-indicator-tag sold-out">نفدت الكمية</span>` : (stock <= 5 ? `<span class="stock-indicator-tag low-stock">متبقي ${stock} قطع فقط!</span>` : '')}
+          <div class="qv-price-row">
+            <span class="qv-price" id="qv-dynamic-price">${p.price} ${currency}</span>
+            ${hasDiscount ? `<span class="qv-old-price">${p.old_price} ${currency}</span>` : ''}
+            ${hasDiscount ? `<span class="product-discount-tag">${discountText}</span>` : ''}
+            ${isSoldOut ? `<span class="stock-indicator-tag sold-out">نفدت الكمية</span>` : (stock <= 5 ? `<span class="stock-indicator-tag low-stock">متبقي ${stock} قطع فقط!</span>` : '')}
+          </div>
+
+          ${!isSoldOut ? `
+            <div class="qv-bundle-banner">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>عرض الباندل: أي بنطلونين بـ 1,500 ج.م | أي 3 بنطلونات بـ 2,000 ج.م!</span>
+            </div>
+          ` : ''}
+
+          ${isSoldOut ? `
+            <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 12px 14px; border-radius: 8px; font-weight: 800; font-size: 0.9rem; margin-bottom: 20px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <span>عذراً، هذا المنتج غير متوفر حالياً (نفدت الكمية بالكامل).</span>
+            </div>
+          ` : ''}
         </div>
-
-        ${!isSoldOut ? `
-          <div class="qv-bundle-banner">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            <span>عرض الباندل: أي بنطلونين بـ 1,500 ج.م | أي 3 بنطلونات بـ 2,000 ج.م!</span>
-          </div>
-        ` : ''}
-
-        ${isSoldOut ? `
-          <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 12px 14px; border-radius: 8px; font-weight: 800; font-size: 0.9rem; margin-bottom: 20px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-            <span>عذراً، هذا المنتج غير متوفر حالياً (نفدت الكمية بالكامل).</span>
-          </div>
-        ` : ''}
 
         <ul class="qv-features-list">
           <li>
@@ -487,57 +489,59 @@ window.openQuickView = function(productId) {
           </li>
         </ul>
 
-        <!-- Size Selection -->
-        <div style="margin-bottom: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="font-size: 0.84rem; font-weight: 700; color: #fff;">المقاس المطلوب:</span>
-            <button type="button" class="btn-open-sizeguide" style="background:none; border:none; color:#a1a1aa; font-size:0.78rem; text-decoration:underline; cursor:pointer;" onclick="openSizeGuideFromQv()">دليل المقاسات 📏</button>
-          </div>
-          <div class="size-selector-row" style="margin-bottom: 0;">
-            ${(p.sizes || ['M, L', 'XL, XXL']).map((s, idx) => `
-              <button 
-                type="button" 
-                class="size-pill ${idx === 0 ? 'active' : ''}" 
-                onclick="selectQvSize('${s}', this)">
-                ${s}
-              </button>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Quantity Selector -->
-        ${!isSoldOut ? `
-          <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
-            <span style="font-size: 0.84rem; font-weight: 700; color: #fff;">الكمية:</span>
-            <div class="cart-qty-ctrl" style="background: var(--bg-card); padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-              <button type="button" class="btn-qty" onclick="changeQvQty(-1)">-</button>
-              <span id="qv-qty-display" style="font-size: 0.95rem; font-weight: 800; min-width: 28px; text-align: center; color: #fff;">1</span>
-              <button type="button" class="btn-qty" onclick="changeQvQty(1)">+</button>
+        <div class="qv-order-group">
+          <!-- Size Selection -->
+          <div style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; flex-wrap: wrap;">
+              <span class="qv-field-label">المقاس المطلوب:</span>
+              <button type="button" class="btn-open-sizeguide" style="background:none; border:none; color:var(--text-secondary); font-size:0.78rem; text-decoration:underline; cursor:pointer;" onclick="openSizeGuideFromQv()">دليل المقاسات 📏</button>
+            </div>
+            <div class="size-selector-row" style="margin-bottom: 0;">
+              ${(p.sizes || ['M, L', 'XL, XXL']).map((s, idx) => `
+                <button 
+                  type="button" 
+                  class="size-pill ${idx === 0 ? 'active' : ''}" 
+                  onclick="selectQvSize('${s}', this)">
+                  ${s}
+                </button>
+              `).join('')}
             </div>
           </div>
-        ` : ''}
 
-        <!-- Actions -->
-        <div class="qv-actions-row">
-          ${isSoldOut ? `
-            <button type="button" class="btn-qv-add is-sold-out-btn" disabled style="background:#27272a; color:#a1a1aa; border:1px solid #3f3f46; cursor:not-allowed; opacity:0.8; font-weight:700;">
-              غير متوفر للطلب حالياً (نفدت الكمية)
-            </button>
-            <button type="button" class="btn-qv-wa" onclick="askAboutSoldOutWhatsApp('${p.id}')">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              استفسر عن موعد توفره عبر واتساب
-            </button>
-          ` : `
-            <button type="button" class="btn-qv-add" onclick="addQvToCart()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-              إضافة إلى سلة المشتريات
-            </button>
+          <!-- Quantity Selector -->
+          ${!isSoldOut ? `
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+              <span class="qv-field-label">الكمية:</span>
+              <div class="cart-qty-ctrl qv-qty-wrap">
+                <button type="button" class="btn-qty" onclick="changeQvQty(-1)">-</button>
+                <span id="qv-qty-display" class="qv-qty-num">1</span>
+                <button type="button" class="btn-qty" onclick="changeQvQty(1)">+</button>
+              </div>
+            </div>
+          ` : ''}
 
-            <button type="button" class="btn-qv-wa" onclick="checkoutQvViaWhatsApp()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              طلب فوري عبر واتساب مباشرة
-            </button>
-          `}
+          <!-- Actions -->
+          <div class="qv-actions-row">
+            ${isSoldOut ? `
+              <button type="button" class="btn-qv-add is-sold-out-btn" disabled style="background:#27272a; color:#a1a1aa; border:1px solid #3f3f46; cursor:not-allowed; opacity:0.8; font-weight:700;">
+                غير متوفر للطلب حالياً (نفدت الكمية)
+              </button>
+              <button type="button" class="btn-qv-wa" onclick="askAboutSoldOutWhatsApp('${p.id}')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                استفسر عن موعد توفره عبر واتساب
+              </button>
+            ` : `
+              <button type="button" class="btn-qv-add" onclick="addQvToCart()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                إضافة إلى سلة المشتريات
+              </button>
+
+              <button type="button" class="btn-qv-wa" onclick="checkoutQvViaWhatsApp()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                طلب فوري عبر واتساب مباشرة
+              </button>
+            `}
+          </div>
         </div>
 
         <!-- Perks -->
@@ -790,17 +794,29 @@ function setupEventListeners() {
     });
   }
 
-  // Quick View Modal Backdrop & Escape
+  // Quick View, Size Guide & Bundle Modal Backdrop + Escape
   const qvModal = document.getElementById('quickview-modal');
   if (qvModal) {
     qvModal.addEventListener('click', (e) => {
       if (e.target === qvModal) closeQuickView();
     });
   }
+  if (sizeModal) {
+    sizeModal.addEventListener('click', (e) => {
+      if (e.target === sizeModal) sizeModal.classList.remove('active');
+    });
+  }
+  const bundleModal = document.getElementById('bundle-builder-modal');
+  if (bundleModal) {
+    bundleModal.addEventListener('click', (e) => {
+      if (e.target === bundleModal) closeBundleBuilderModal();
+    });
+  }
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeQuickView();
+      closeBundleBuilderModal();
       if (sizeModal) sizeModal.classList.remove('active');
       closeCartDrawer();
     }
@@ -1186,17 +1202,20 @@ function renderBundleBuilderSlots(count) {
   for (let i = 0; i < count; i++) {
     // Pick initial product based on index
     const initialProd = defaultProducts[i % defaultProducts.length];
+    const sizesList = (initialProd && initialProd.sizes && initialProd.sizes.length) ? initialProd.sizes : ['M, L', 'XL, XXL'];
+    const defaultSize = sizesList[0];
+
     slotsHtml += `
       <div class="bundle-slot-selector" id="bundle-slot-${i}">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 0.82rem; font-weight: 800; color: #fff;">البنطلون رقم ${i + 1}:</span>
-          <span style="font-size: 0.72rem; color: #22c55e; font-weight: 700;">مشمول في الباندل ✓</span>
+        <div class="bundle-slot-head">
+          <span class="bundle-slot-title">البنطلون رقم ${i + 1}:</span>
+          <span class="bundle-slot-badge">مشمول في الباندل ✓</span>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="bundle-slot-controls">
           <div>
-            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 4px;">اللون والموديل:</label>
-            <select class="form-control bundle-color-select" id="bundle-color-${i}" style="font-size: 0.82rem; padding: 8px;">
-              ${defaultProducts.map((p, idx) => `
+            <label class="bundle-field-label" for="bundle-color-${i}">اللون والموديل:</label>
+            <select class="form-control reign-select bundle-color-select" id="bundle-color-${i}">
+              ${defaultProducts.map((p) => `
                 <option value="${p.id}" ${p.id === initialProd.id ? 'selected' : ''}>
                   ${p.name_ar || p.name}
                 </option>
@@ -1204,11 +1223,21 @@ function renderBundleBuilderSlots(count) {
             </select>
           </div>
           <div>
-            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 4px;">المقاس المطلوب:</label>
-            <select class="form-control bundle-size-select" id="bundle-size-${i}" style="font-size: 0.82rem; padding: 8px;">
-              <option value="M, L" selected>M, L (ميديم / لارج)</option>
-              <option value="XL, XXL">XL, XXL (إكس لارج / 2 إكس)</option>
-            </select>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <label class="bundle-field-label" style="margin-bottom: 0;">المقاس المطلوب:</label>
+              <button type="button" class="btn-open-sizeguide" style="background:none; border:none; color:var(--text-secondary); font-size:0.74rem; text-decoration:underline; cursor:pointer;" onclick="openSizeGuideFromQv()">دليل المقاسات 📏</button>
+            </div>
+            <input type="hidden" id="bundle-size-${i}" class="bundle-size-select" value="${defaultSize}">
+            <div class="bundle-size-pills" id="bundle-size-pills-${i}">
+              <button type="button" class="bundle-size-pill ${defaultSize === 'M, L' ? 'active' : ''}" onclick="selectBundleSlotSize(${i}, 'M, L', this)">
+                <span>M, L</span>
+                <small>60 - 80 كجم</small>
+              </button>
+              <button type="button" class="bundle-size-pill ${defaultSize === 'XL, XXL' ? 'active' : ''}" onclick="selectBundleSlotSize(${i}, 'XL, XXL', this)">
+                <span>XL, XXL</span>
+                <small>80 - 110 كجم</small>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1216,6 +1245,17 @@ function renderBundleBuilderSlots(count) {
   }
   container.innerHTML = slotsHtml;
 }
+
+window.selectBundleSlotSize = function(slotIdx, size, btnEl) {
+  const hiddenInput = document.getElementById(`bundle-size-${slotIdx}`);
+  if (hiddenInput) hiddenInput.value = size;
+
+  const pillsWrap = document.getElementById(`bundle-size-pills-${slotIdx}`);
+  if (pillsWrap) {
+    pillsWrap.querySelectorAll('.bundle-size-pill').forEach(btn => btn.classList.remove('active'));
+  }
+  if (btnEl) btnEl.classList.add('active');
+};
 
 window.addBundleToCart = function() {
   for (let i = 0; i < activeBundleTargetCount; i++) {

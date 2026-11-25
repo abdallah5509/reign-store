@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>REIGN | Premium Sportswear — Rule Your Comfort</title>
   <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
-  <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=3.0">
 </head>
 <body>
 
@@ -401,40 +401,42 @@
   <div class="modal-overlay" id="sizeguide-modal">
     <div class="modal-content">
       <button class="modal-close" id="sizeguide-close" title="إغلاق">&times;</button>
-      <h3 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 6px;">دليل مقاسات بناطيل REIGN 📏</h3>
-      <p style="font-size: 0.88rem; color: #a1a1aa; margin-bottom: 20px;">
+      <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 6px; color: var(--text-primary);">دليل مقاسات بناطيل REIGN 📏</h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 18px;">
         بناطيلنا تأتي بقصة وايد ليج فضفاضة (Relaxed / Baggy Fit). إذا كنت تفضل مظهراً مضبوطاً خذ مقاسك المعتاد، وإذا كنت تفضل لوك واسع جداً خذ مقاس أكبر.
       </p>
 
-      <table class="size-table">
-        <thead>
-          <tr>
-            <th>المقاس الموحد</th>
-            <th>الوزن المقترح</th>
-            <th>الطول المقترح</th>
-            <th>محيط الخصر</th>
-            <th>نوع القصة (Fit)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong style="font-size: 1.05rem; color: #fff;">M, L</strong></td>
-            <td>60 - 80 كجم</td>
-            <td>168 - 180 سم</td>
-            <td>30 - 34 بوصة</td>
-            <td>وايد ليج مريح ومضبوط للأوزان المتوسطة</td>
-          </tr>
-          <tr>
-            <td><strong style="font-size: 1.05rem; color: #fff;">XL, XXL</strong></td>
-            <td>80 - 110 كجم</td>
-            <td>180 - 195 سم</td>
-            <td>35 - 42 بوصة</td>
-            <td>أوفرسايز واسع جداً أو للأوزان والأطوال الكبيرة</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="size-table-wrap">
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>المقاس الموحد</th>
+              <th>الوزن المقترح</th>
+              <th>الطول المقترح</th>
+              <th>محيط الخصر</th>
+              <th>نوع القصة (Fit)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="font-size: 1.05rem; color: var(--text-primary);">M, L</strong></td>
+              <td>60 - 80 كجم</td>
+              <td>168 - 180 سم</td>
+              <td>30 - 34 بوصة</td>
+              <td>وايد ليج مريح ومضبوط للأوزان المتوسطة</td>
+            </tr>
+            <tr>
+              <td><strong style="font-size: 1.05rem; color: var(--text-primary);">XL, XXL</strong></td>
+              <td>80 - 110 كجم</td>
+              <td>180 - 195 سم</td>
+              <td>35 - 42 بوصة</td>
+              <td>أوفرسايز واسع جداً أو للأوزان والأطوال الكبيرة</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <div style="margin-top: 24px; padding: 14px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.82rem; color: #d4d4d8;">
+      <div style="margin-top: 20px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.82rem; color: var(--text-secondary);">
         💡 <strong>نصيحة:</strong> المندوب يتيح لك فتح الشحنة وقياس البنطلون مباشرة قبل الدفع للتأكد من المقاس بنسبة 100%.
       </div>
     </div>
@@ -496,9 +498,9 @@
   <div class="modal-overlay" id="bundle-builder-modal">
     <div class="bundle-modal-window">
       <button class="modal-close" onclick="closeBundleBuilderModal()" title="إغلاق">&times;</button>
-      <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+      <div style="margin-bottom: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; padding-left: 40px;">
         <span class="bundle-subtitle-badge" id="bundle-modal-badge">باندل التوفير</span>
-        <h3 id="bundle-modal-title" style="font-size: 1.4rem; font-weight: 800; color: #fff; margin: 4px 0 6px 0;">اختر تشكيلة الباندل</h3>
+        <h3 id="bundle-modal-title" style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin: 4px 0 6px 0;">اختر تشكيلة الباندل</h3>
         <p id="bundle-modal-desc" style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">حدد الألوان والمقاسات التي تناسبك وسنقوم بتجهيزها لك فوراً.</p>
       </div>
 
@@ -506,18 +508,18 @@
         <!-- Rendered by JS -->
       </div>
 
-      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px; margin-top: 16px; margin-bottom: 20px;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px; margin-top: 14px; margin-bottom: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
           <span style="font-size: 0.88rem; color: var(--text-secondary);">المجموع الأصلي:</span>
           <span id="bundle-modal-old-price" style="text-decoration: line-through; color: var(--text-muted); font-family: var(--font-en);">1,740 ج.م</span>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-          <span style="font-size: 0.88rem; color: #22c55e; font-weight: 700;">توفير الباندل:</span>
-          <span id="bundle-modal-savings" style="color: #22c55e; font-weight: 800;">-240 ج.م</span>
+          <span style="font-size: 0.88rem; color: #16a34a; font-weight: 700;">توفير الباندل:</span>
+          <span id="bundle-modal-savings" style="color: #16a34a; font-weight: 800;">-240 ج.م</span>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--border-color);">
-          <span style="font-size: 1rem; font-weight: 800; color: #fff;">السعر الإجمالي للباندل:</span>
-          <span id="bundle-modal-final-price" style="font-size: 1.5rem; font-weight: 900; color: #fff; font-family: var(--font-en);">1,500 ج.م</span>
+          <span style="font-size: 1rem; font-weight: 800; color: var(--text-primary);">السعر الإجمالي للباندل:</span>
+          <span id="bundle-modal-final-price" style="font-size: 1.45rem; font-weight: 900; color: var(--text-primary); font-family: var(--font-en);">1,500 ج.م</span>
         </div>
       </div>
 
@@ -586,6 +588,6 @@
     </div>
   </footer>
 
-  <script src="assets/js/app.js?v=2.0"></script>
+  <script src="assets/js/app.js?v=3.0"></script>
 </body>
 </html>
